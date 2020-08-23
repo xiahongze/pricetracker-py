@@ -32,6 +32,9 @@ if 'CONFIG' in os.environ:
     data = yaml.safe_load(os.environ['CONFIG'])
     config = Config(**data)
 
+if not config.po_app_token:
+    raise ValueError('po_app_token is not set')
+
 logger = get_logger(config)
 
 logger.info(config)

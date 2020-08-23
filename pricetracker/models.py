@@ -1,4 +1,3 @@
-from contextlib import contextmanager
 from datetime import datetime
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
@@ -7,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.session import sessionmaker
 
-from pricetracker.config import Config
+from pricetracker.config import config
 
 Base = declarative_base()
 
@@ -18,6 +17,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     po_user = Column(String, nullable=False)
+    po_device = Column(String, default='')
 
 
 class WebsiteConfig(Base):
@@ -54,7 +54,7 @@ class PriceHistory(Base):
     page = relationship("Page", back_populates="price_history")
 
 
-engine = create_engine(Config.db_path, echo=True)
+engine = create_engine(config.db_path, echo=True)
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 

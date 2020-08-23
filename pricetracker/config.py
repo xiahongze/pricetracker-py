@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 class Config(BaseModel):
     db_path: str = 'sqlite:///db.sqlite3'
-    debug: bool = False
+    debug: bool = True
     log_output: str = 'app.log'
     po_app_token: str = ''  # pushover
     max_retry: int = 10
@@ -27,7 +27,7 @@ def get_logger(config: Config):
         logger.setLevel(logging.DEBUG)
 
     fh = logging.FileHandler(config.log_output)
-    fmt = logging.Formatter()
+    fmt = logging.Formatter("%(asctime)s %(levelname)s %(filename)s.%(funcName)s: %(message)s")
     fh.setFormatter(fmt)
 
     logger.addHandler(fh)
@@ -39,4 +39,4 @@ config = Config()
 
 logger = get_logger(config)
 
-logger.info(config)
+logger.info(config.__dict__)

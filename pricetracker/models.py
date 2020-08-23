@@ -57,7 +57,7 @@ class Price(Base):
     page = relationship("Page", back_populates="price_history")
 
 
-engine = create_engine(config.db_path, echo=True)
+engine = create_engine(config.db_path, echo=config.debug)
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 

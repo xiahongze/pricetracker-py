@@ -1,21 +1,12 @@
 import logging
-import os
-from dataclasses import dataclass, fields
+
+from pydantic import BaseModel
 
 
-@dataclass
-class Config:
-    db_path: str = 'db.sqlite3'
-    po_user: str = ''
-    po_token: str = ''
+class Config(BaseModel):
+    db_path: str = 'sqlite:///db.sqlite3'
     debug: bool = False
     log_output: str = 'app.log'
-
-    def refresh_from_env(self):
-        for field in fields(self):
-            env = field.name.upper()
-            if env in os.environ:
-                setattr(self, field.name, field.type(os.environ[env]))
 
 
 def get_logger(config: Config):

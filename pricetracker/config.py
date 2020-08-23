@@ -1,5 +1,7 @@
 import logging
+import os
 
+import yaml
 from pydantic import BaseModel
 
 
@@ -7,6 +9,7 @@ class Config(BaseModel):
     db_path: str = 'sqlite:///db.sqlite3'
     debug: bool = False
     log_output: str = 'app.log'
+    po_app_token: str = ''  # pushover
 
 
 def get_logger(config: Config):
@@ -25,6 +28,9 @@ def get_logger(config: Config):
 
 
 config = Config()
+if 'CONFIG' in os.environ:
+    data = yaml.safe_load(os.environ['CONFIG'])
+    config = Config(**data)
 
 logger = get_logger(config)
 

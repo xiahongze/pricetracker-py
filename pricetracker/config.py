@@ -10,6 +10,14 @@ class Config(BaseModel):
     debug: bool = False
     log_output: str = 'app.log'
     po_app_token: str = ''  # pushover
+    max_retry: int = 10
+
+    def __init__(self, **data):
+        if 'CONFIG' in os.environ:
+            data = yaml.safe_load(os.environ['CONFIG'])
+        if 'PO_APP_TOKEN' in os.environ:
+            data['po_app_token'] = os.environ['PO_APP_TOKEN']
+        super().__init__(**data)
 
 
 def get_logger(config: Config):
@@ -28,12 +36,6 @@ def get_logger(config: Config):
 
 
 config = Config()
-if 'CONFIG' in os.environ:
-    data = yaml.safe_load(os.environ['CONFIG'])
-    config = Config(**data)
-
-if not config.po_app_token:
-    raise ValueError('po_app_token is not set')
 
 logger = get_logger(config)
 

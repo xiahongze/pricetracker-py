@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.engine import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.session import sessionmaker
 
-from pricetracker.config import config
+from .config import config
 
 Base = declarative_base()
 
@@ -37,7 +37,8 @@ class Page(Base):
     created_time = Column(DateTime, default=datetime.now)
     updated_time = Column(DateTime, default=datetime.now)
     next_check = Column(DateTime, default=datetime.now)
-    retry = Column(Integer, default=0)
+    retry = Column(Integer, default=0)  # counter
+    active = Column(Boolean, default=True)
 
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("User", back_populates="pages")

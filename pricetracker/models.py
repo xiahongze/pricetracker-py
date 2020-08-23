@@ -1,3 +1,5 @@
+"""SQL Schemas -- ORM with sqlalchemy
+"""
 from datetime import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
@@ -12,7 +14,7 @@ Base = declarative_base()
 
 
 class User(Base):
-    __table_name__ = 'users'
+    __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
@@ -21,7 +23,7 @@ class User(Base):
 
 
 class WebsiteConfig(Base):
-    __table_name__ = 'website_config'
+    __tablename__ = 'website_config'
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
@@ -29,14 +31,14 @@ class WebsiteConfig(Base):
 
 
 class Page(Base):
-    __table_name__ = 'pages'
+    __tablename__ = 'pages'
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     url = Column(String, nullable=False)
     created_time = Column(DateTime, default=datetime.now)
     updated_time = Column(DateTime, default=datetime.now)
-    next_check = Column(DateTime, default=datetime.now)
+    freq = Column(Integer, default=24)  # hours
     retry = Column(Integer, default=0)  # counter
     active = Column(Boolean, default=True)
 
@@ -44,8 +46,8 @@ class Page(Base):
     user = relationship("User", back_populates="pages")
 
 
-class PriceHistory(Base):
-    __table_name__ = 'price_history'
+class Price(Base):
+    __tablename__ = 'price_history'
 
     id = Column(Integer, primary_key=True)
     price = Column(String, nullable=False)

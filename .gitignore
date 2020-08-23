@@ -1,5 +1,7 @@
 *.pyc
 build
 dist
-.vscode
+.vscode/settings.json
 .idea
+*.log
+*.sqlite3

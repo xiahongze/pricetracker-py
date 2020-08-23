@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter
 from fastapi.params import Depends
 from pydantic import BaseModel
@@ -7,10 +9,10 @@ from ..models import create_session
 
 
 class User(BaseModel):
-    id: int
-    name: str
-    po_user: str
-    po_device: str = ''
+    id: Optional[int]
+    name: Optional[str]
+    po_user: Optional[str]
+    po_device: Optional[str]
 
 
 router = APIRouter()

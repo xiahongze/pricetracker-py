@@ -11,6 +11,10 @@ class Config(BaseModel):
     log_output: str = 'app.log'
     po_app_token: str = ''  # pushover
     max_retry: int = 10
+    chrome_driver_path: str = 'chromedriver'
+    gecko_driver_path: str = 'geckodriver'
+    use_chrome: bool = True
+    timeout: int = 10
 
     def __init__(self, **data):
         if 'CONFIG' in os.environ:

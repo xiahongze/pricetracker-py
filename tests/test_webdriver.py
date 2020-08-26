@@ -24,6 +24,12 @@ def test_coles():
     assert '$' in track(url, xpath)
 
 
+def test_chemist():
+    url = "https://www.chemistwarehouse.com.au/buy/1062/beconase-hayfever-nasal-spray-200-doses"
+    xpath = '//span[@class="product__price"] | //div[@class="product__price"]'
+    assert '$' in track(url, xpath, False)
+
+
 def test_coles_not_exist():
     url = 'https://shop.coles.com.au/a/national/product/goldn-canola-canola-oil'
     xpath = '//span/strong[@class="product-price not-exist"]'

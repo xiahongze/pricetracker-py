@@ -50,8 +50,8 @@ def clean_text(text: str):
     return spaces.sub('', text)
 
 
-def track(url: str, xpath: str):
-    if config.use_chrome:
+def track(url: str, xpath: str, use_chrome=config.use_chrome):
+    if use_chrome:
         make_driver = partial(webdriver.Chrome, executable_path=config.chrome_driver_path,
                               options=make_chrome_options())
     else:

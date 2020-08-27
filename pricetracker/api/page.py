@@ -6,7 +6,9 @@ from fastapi.params import Depends
 from pydantic import BaseModel
 from sqlalchemy.orm.session import Session
 
+from ..models import Page as PageORM
 from ..models import create_session
+from .basic_crud import mount
 from .user import User
 
 
@@ -23,13 +25,13 @@ class Page(BaseModel):
     user_id: Optional[int]
     user: Optional[User]
 
+    class Config:
+        orm_mode = True
+
 
 router = APIRouter()
 
-
-@router.get('/')
-def get_page(idx: int, sess: Session = Depends(create_session)):
-    pass
+mount('page', router, Page, PageORM, ignored={'create', 'list'})
 
 
 @router.get('/list')
@@ -37,16 +39,6 @@ def get_pages(sess: Session = Depends(create_session)):
     pass
 
 
-@router.delete('/')
-def delete_page(idx: int, sess: Session = Depends(create_session)):
-    pass
-
-
 @router.put('/')
 def create_page(page: Page, sess: Session = Depends(create_session)):
-    pass
-
-
-@router.post('/')
-def update_page(page: Page, sess: Session = Depends(create_session)):
     pass

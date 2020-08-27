@@ -16,7 +16,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     po_user = Column(String, nullable=False)
     po_device = Column(String, default='')
@@ -26,7 +26,7 @@ class User(Base):
 class WebsiteConfig(Base):
     __tablename__ = 'website_config'
 
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False, unique=True)
     regex = Column(String, nullable=False)
 
@@ -34,7 +34,7 @@ class WebsiteConfig(Base):
 class Page(Base):
     __tablename__ = 'pages'
 
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     url = Column(String, nullable=False)
     created_time = Column(DateTime, default=datetime.now)
@@ -53,7 +53,7 @@ class Page(Base):
 class Price(Base):
     __tablename__ = 'price_history'
 
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     price = Column(String, nullable=False)
     created_time = Column(DateTime, default=datetime.now)
 

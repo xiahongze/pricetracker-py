@@ -19,8 +19,9 @@ class Config(BaseModel):
     def __init__(self, **data):
         if 'CONFIG' in os.environ:
             data = yaml.safe_load(os.environ['CONFIG'])
-        if 'PO_APP_TOKEN' in os.environ:
-            data['po_app_token'] = os.environ['PO_APP_TOKEN']
+        for k in Config.schema()['properties']:  # only the first layer not cover nested models
+            if k.upper() in os.environ:
+                data[k] = os.environ[k.upper()]
         super().__init__(**data)
 
 

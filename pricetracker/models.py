@@ -43,7 +43,7 @@ class Page(Base):
     retry = Column(Integer, default=0)  # counter
     active = Column(Boolean, default=True)
 
-    user_id = Column(Integer, ForeignKey('users.id'))
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship("User", back_populates="pages")
 
     prices = relationship("Price", back_populates="page",

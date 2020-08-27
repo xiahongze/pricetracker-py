@@ -5,3 +5,5 @@ dist
 .idea
 *.log
 *.sqlite3
+htmlcov
+.coverage

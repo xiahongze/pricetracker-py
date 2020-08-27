@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from pricetracker.api.user import User
 
 
-def test_user_api(testclient: TestClient):
+def test_user_api(testclient: TestClient, fresh_db):
     # create
     user = User(name='testuser1', po_user='pouser1', po_token='potoken1')
     resp = testclient.put('/user/', user.json(exclude_unset=True))

@@ -4,6 +4,7 @@ from tempfile import mktemp
 
 import pytest
 from fastapi.testclient import TestClient
+from starlette import status
 
 # sqlite:///:memory: (or, sqlite://)
 # sqlite:///relative/path/to/file.db
@@ -20,6 +21,22 @@ def testclient():
 
 
 @pytest.fixture
+def user(testclient):
+    # don't import at the beginning of the file
+    # because we need to set the env before the package is loaded
+    from pricetracker.api.user import User
+
+    # add user
+    user = User(name='testuser1', po_user='pouser1', po_token='potoken1')
+    resp = testclient.put('/user/', user.json(exclude_unset=True))
+    assert resp.status_code == status.HTTP_201_CREATED
+    user = User(**resp.json())
+    yield user
+    resp = testclient.delete(f'/user/?idx={user.id}')
+    assert resp.status_code == status.HTTP_202_ACCEPTED
+
+
+@pytest.fixture
 def fresh_db():
     from pricetracker.models import Price, Session, User, WebsiteConfig
 
@@ -31,4 +48,4 @@ def fresh_db():
     yield
 
 
-atexit.register(lambda: os.unlink(tmp_db))
+atexit.register(lambda: os.path.exists(tmp_db) and os.unlink(tmp_db))

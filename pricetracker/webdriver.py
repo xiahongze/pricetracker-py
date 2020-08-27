@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from .config import config, logger
 
 ua = UserAgent()
-HEADLESS = False
+HEADLESS = True
 
 
 def make_chrome_options():

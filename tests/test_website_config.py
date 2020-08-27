@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from pricetracker.api.website_config import WebsiteConfig
 
 
-def test_website_config_api(testclient: TestClient):
+def test_website_config_api(testclient: TestClient, fresh_db):
     # create
     config = WebsiteConfig(name='testconfig', regex='some regex')
     resp = testclient.put('/website-config/', config.json(exclude_unset=True))

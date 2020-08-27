@@ -1,0 +1,10 @@
+# .coveragerc to control coverage.py
+[run]
+branch = True
+source = pricetracker
+
+[report]
+precision = 2
+
+[html]
+directory = htmlcov

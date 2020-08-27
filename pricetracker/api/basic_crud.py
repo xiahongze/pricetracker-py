@@ -32,6 +32,9 @@ def mount(name: str, router: APIRouter, klass_py, klass_orm, ignored=set()):
             raise HTTPException(400, f"{name} id is not given")
         model_orm: klass_orm = sess.query(klass_orm).filter(klass_orm.id == model_py.id).one()
         for f, v in model_py.dict(exclude_none=True, exclude_unset=True).items():
+            if type(v) is dict:
+                # nested models are usually mapped to foreign key objects
+                continue
             setattr(model_orm, f, v)
         sess.add(model_orm)
         return

@@ -13,6 +13,7 @@ class Config(BaseModel):
     max_retry: int = 10
     chrome_driver_path: str = 'chromedriver'
     gecko_driver_path: str = 'geckodriver'
+    headless: bool = True
     use_chrome: bool = True
     timeout: int = 10
 

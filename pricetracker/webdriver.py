@@ -11,15 +11,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from .config import config, logger
 
 ua = UserAgent()
-HEADLESS = True
 
 
 def make_chrome_options():
     options = webdriver.ChromeOptions()
     excluded_flags = ['enable-automation', 'ignore-certificate-errors']
-    options.headless = HEADLESS
-    options.add_argument('disable-gpu')
-    options.add_argument(f"--user-agent=User-Agent: {ua.chrome}")
+    options.headless = config.headless
+    options.add_argument('--disable-gpu')
+    options.add_argument(f"--user-agent={ua.chrome}")
     options.add_experimental_option("excludeSwitches", excluded_flags)
     options.add_argument('--profile-directory=Default')
     options.add_argument("--incognito")
@@ -33,7 +32,7 @@ def make_chrome_options():
 
 def make_firefox_options():
     options = webdriver.FirefoxOptions()
-    options.headless = HEADLESS
+    options.headless = config.headless
     profile = webdriver.FirefoxProfile()
     profile.set_preference("general.useragent.override", ua.firefox)
     profile.set_preference("dom.webdriver.enabled", False)

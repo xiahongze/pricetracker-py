@@ -43,7 +43,7 @@ def config(testclient):
     from pricetracker.api.website_config import WebsiteConfig
 
     # add config
-    config = WebsiteConfig(name='config1', regex='interestingregex')
+    config = WebsiteConfig(name='config1', xpath='interestingxpath')
     resp = testclient.put('/website-config/', config.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     config = WebsiteConfig(**resp.json())
@@ -55,6 +55,7 @@ def config(testclient):
 @pytest.fixture
 def page(user, config, testclient):
     from pricetracker.api.page import Page
+
     # breakpoint()
     page = Page(name='coffee', url='http://example.com/xxx', user_id=user.id, config_id=config.id)
     resp = testclient.put('/page/', page.json(exclude_unset=True))

@@ -5,7 +5,7 @@ from pricetracker.api.website_config import WebsiteConfig
 
 def test_website_config_api(testclient: TestClient, fresh_db):
     # create
-    config = WebsiteConfig(name='testconfig', regex='some regex')
+    config = WebsiteConfig(name='testconfig', xpath='some xpath')
     resp = testclient.put('/website-config/', config.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     config1 = WebsiteConfig(**resp.json())
@@ -17,7 +17,7 @@ def test_website_config_api(testclient: TestClient, fresh_db):
 
     # update
     config1.name = 'config2'
-    config1.regex = 'new regex'
+    config1.xpath = 'new xpath'
     resp = testclient.post(f'/website-config/', config1.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_200_OK
 
@@ -27,7 +27,7 @@ def test_website_config_api(testclient: TestClient, fresh_db):
     assert config1 == WebsiteConfig(**resp.json())
 
     # add another
-    config = WebsiteConfig(name='testconfig2', regex='some regex2')
+    config = WebsiteConfig(name='testconfig2', xpath='some xpath2')
     resp = testclient.put('/website-config/', config.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     config2 = WebsiteConfig(**resp.json())

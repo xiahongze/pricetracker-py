@@ -1,11 +1,14 @@
 """SQL Schemas -- ORM with sqlalchemy
 """
+from contextlib import contextmanager
 from datetime import datetime
+from typing import Any, Generator
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.engine import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.session import Session as SessionType
 from sqlalchemy.orm.session import sessionmaker
 
 from .config import config
@@ -28,7 +31,7 @@ class WebsiteConfig(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False, unique=True)
-    regex = Column(String, nullable=False)
+    xpath = Column(String, nullable=False)
     pages = relationship("Page", back_populates="config", cascade="all, delete, delete-orphan")
 
 
@@ -70,7 +73,7 @@ Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 
 
-def create_session():
+def create_session() -> Generator[SessionType, Any, None]:
     """Provide a transactional scope around a series of operations.
     https://docs.sqlalchemy.org/en/13/orm/session_basics.html#when-do-i-construct-a-session-when-do-i-commit-it-and-when-do-i-close-it
     """
@@ -83,3 +86,6 @@ def create_session():
         raise
     finally:
         session.close()
+
+
+create_session_auto = contextmanager(create_session)

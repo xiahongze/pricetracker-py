@@ -53,6 +53,19 @@ def config(testclient):
 
 
 @pytest.fixture
+def page(user, config, testclient):
+    from pricetracker.api.page import Page
+    # breakpoint()
+    page = Page(name='coffee', url='http://example.com/xxx', user_id=user.id, config_id=config.id)
+    resp = testclient.put('/page/', page.json(exclude_unset=True))
+    assert resp.status_code == status.HTTP_201_CREATED
+    page = Page(**resp.json())
+    yield page
+    resp = testclient.delete(f'/page/?idx={page.id}')
+    assert resp.status_code == status.HTTP_202_ACCEPTED
+
+
+@pytest.fixture
 def fresh_db():
     # this fixture needs to be put before other db related fixtures, such as
     # user and config (above)

@@ -29,6 +29,7 @@ class WebsiteConfig(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False, unique=True)
     regex = Column(String, nullable=False)
+    pages = relationship("Page", back_populates="config", cascade="all, delete, delete-orphan")
 
 
 class Page(Base):
@@ -45,6 +46,9 @@ class Page(Base):
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship("User", back_populates="pages")
+
+    config_id = Column(Integer, ForeignKey('website_config.id'), nullable=False)
+    config = relationship("WebsiteConfig", back_populates="pages")
 
     prices = relationship("Price", back_populates="page",
                           cascade="all, delete, delete-orphan")

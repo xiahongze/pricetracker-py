@@ -9,9 +9,11 @@ from starlette import status
 
 from ..models import Page as PageORM
 from ..models import User as UserORM
+from ..models import WebsiteConfig as WebsiteConfigORM
 from ..models import create_session
 from .basic_crud import mount
 from .user import User
+from .website_config import WebsiteConfig
 
 
 class Page(BaseModel):
@@ -26,6 +28,9 @@ class Page(BaseModel):
 
     user_id: Optional[int]
     user: Optional[User]
+
+    config_id: Optional[int]
+    config: Optional[WebsiteConfig]
 
     class Config:
         orm_mode = True
@@ -43,11 +48,14 @@ def get_pages(user_id: int, sess: Session = Depends(create_session)):
 
 @router.put('/', response_model=Page, status_code=status.HTTP_201_CREATED)
 def create_page(page: Page, sess: Session = Depends(create_session)):
-    if page.user_id is None:
-        raise HTTPException(400, "user id is not given")
+    if page.user_id is None or page.config_id is None:
+        raise HTTPException(400, "user or config id is not given")
     user = sess.query(UserORM).filter(UserORM.id == page.user_id).scalar()
     if not user:
-        raise HTTPException(400, f"user id ({page.user_id}) is not given")
+        raise HTTPException(400, f"user id ({page.user_id}) does not exist")
+    config = sess.query(WebsiteConfigORM).filter(WebsiteConfigORM.id == page.config_id).scalar()
+    if not config:
+        raise HTTPException(400, f"config id ({page.config_id}) does not exist")
     pageOrm = PageORM(**page.dict(exclude_none=True, exclude_unset=True))
     sess.add(pageOrm)
     sess.flush([pageOrm])

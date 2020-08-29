@@ -37,7 +37,25 @@ def user(testclient):
 
 
 @pytest.fixture
+def config(testclient):
+    # don't import at the beginning of the file
+    # because we need to set the env before the package is loaded
+    from pricetracker.api.website_config import WebsiteConfig
+
+    # add config
+    config = WebsiteConfig(name='config1', regex='interestingregex')
+    resp = testclient.put('/website-config/', config.json(exclude_unset=True))
+    assert resp.status_code == status.HTTP_201_CREATED
+    config = WebsiteConfig(**resp.json())
+    yield config
+    resp = testclient.delete(f'/website-config/?idx={config.id}')
+    assert resp.status_code == status.HTTP_202_ACCEPTED
+
+
+@pytest.fixture
 def fresh_db():
+    # this fixture needs to be put before other db related fixtures, such as
+    # user and config (above)
     from pricetracker.models import Price, Session, User, WebsiteConfig
 
     sess = Session()

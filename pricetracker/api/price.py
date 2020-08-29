@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm.session import Session
 from starlette import status
 
+from ..models import Page as PageORM
 from ..models import Price as PriceORM
 from ..models import create_session
 from .page import Page
@@ -16,7 +17,7 @@ from .page import Page
 class Price(BaseModel):
     id: Optional[int]
     price: str
-    created_time: datetime
+    created_time: Optional[datetime]
 
     page_id: Optional[int]
     page: Optional[Page]
@@ -26,6 +27,19 @@ class Price(BaseModel):
 
 
 router = APIRouter()
+
+
+@router.put('/', response_model=Price, status_code=status.HTTP_201_CREATED)
+def create_price(price: Price, sess: Session = Depends(create_session)):
+    if price.page_id is None:
+        raise HTTPException(400, "page id is not given")
+    page = sess.query(PageORM).filter(PageORM.id == price.page_id).scalar()
+    if not page:
+        raise HTTPException(400, f"page id ({price.page_id}) does not exist")
+    priceOrm = PriceORM(**price.dict(exclude_none=True, exclude_unset=True))
+    sess.add(priceOrm)
+    sess.flush([priceOrm])
+    return Price.from_orm(priceOrm)
 
 
 @router.get('/', response_model=List[Price])

@@ -2,8 +2,8 @@ from pathlib import Path
 
 from setuptools import setup
 
-__version__ = '0.1.0'
 __app__ = 'pricetracker'
+__version__ = Path(__file__).parent.joinpath(f'{__app__}/assets/VERSION').read_text()
 
 
 def get_lines(this_path: Path, filename: str):
@@ -27,7 +27,7 @@ if __name__ == "__main__":
         long_description_content_type='text/markdown',
         license='MIT',
         packages=[__app__],
-        # package_data={__app__: ["assets/*"]},
+        package_data={__app__: ["assets/*"]},
         install_requires=install_requires,
         tests_require=test_requires,
         zip_safe=True,

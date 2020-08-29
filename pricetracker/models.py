@@ -42,7 +42,7 @@ class Page(Base):
     name = Column(String, nullable=False)
     url = Column(String, nullable=False)
     created_time = Column(DateTime, default=datetime.now)
-    updated_time = Column(DateTime, default=datetime.now)
+    next_check = Column(DateTime, default=datetime.now)
     freq = Column(Integer, default=24)  # hours
     retry = Column(Integer, default=0)  # counter
     active = Column(Boolean, default=True)

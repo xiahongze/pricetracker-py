@@ -7,16 +7,27 @@ from .models import Page, Price, WebsiteConfig, create_session_auto
 from .pushover import send_message
 from .webdriver import track
 
+# TODO:
+# - retry
+# - exception
+# - deactivate
+
 
 def get_outdated_pages_and_configs() -> List[Tuple[Page, WebsiteConfig]]:
     with create_session_auto() as sess:
         return (
             sess
             .query(Page, WebsiteConfig)
-            .filter(Page.updated_time + timedelta(hours=Page.freq) < datetime.now())
+            .filter(Page.next_check < datetime.now())
             .join(WebsiteConfig)
             .all()
         )
+
+
+def update_page(page: Page):
+    with create_session_auto() as sess:
+        page.next_check = timedelta(seconds=page.retry * config.pulling_freq) + datetime.now()
+        sess.add(page)
 
 
 def get_prices(page: Page, limit=30, last_only=False) -> Union[Optional[Price], List[Price]]:
@@ -48,11 +59,13 @@ def check_db():
             pages_configs = get_outdated_pages_and_configs()
             if not pages_configs:
                 logger.info("no outdated pages found")
+                time.sleep(config.pulling_freq)
                 continue
             for page, conf in pages_configs:
                 current_price = track(page.url, conf.xpath)
                 last_price = get_prices(page, last_only=True)
                 add_price(page, current_price)
+                update_page(page)
                 if last_price is None:
                     logger.info(f"found the first price for {page.name}")
                     continue
@@ -63,4 +76,4 @@ def check_db():
                 send_message(compose_message(page, conf, current_price, last_price.price, prices))
         except:
             logger.exception("encountered exception")
-        time.sleep(config.check_freq)
+        time.sleep(config.pulling_freq)

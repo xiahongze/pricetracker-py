@@ -9,7 +9,7 @@ class Config(BaseModel):
     db_path: str = 'sqlite:///db.sqlite3'
     debug: bool = True
     log_output: str = 'app.log'
-    check_freq: int = 600  # seconds
+    pulling_freq: int = 600  # seconds
     fetch_limit: int = 30  # for historical prices
     po_app_token: str = ''  # pushover
     max_retry: int = 10

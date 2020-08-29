@@ -1,3 +1,4 @@
+from pathlib import Path
 from threading import Thread
 
 from fastapi import FastAPI
@@ -10,10 +11,11 @@ from .api.website_config import router as config_router
 from .config import config, logger
 from .task import check_db
 
+version = Path(__file__).parent.joinpath('assets/VERSION').read_text()
 app = FastAPI(
     debug=config.debug,
     title="Price Tracker API",
-    version="0.1.0",
+    version=version,
     description="Track Price That Matters"
 )
 
@@ -31,6 +33,7 @@ app.include_router(config_router, prefix='/website-config',  tags=['WebsiteConfi
 
 @app.on_event("startup")
 def on_startup():
+    logger.info(f"version={version}")
     logger.info("starting background tasks...")
     t = Thread(target=check_db, daemon=True)
     t.start()

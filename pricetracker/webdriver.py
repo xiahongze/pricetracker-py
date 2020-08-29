@@ -40,7 +40,7 @@ def make_firefox_options():
     return options
 
 
-init_js = Path(__file__).with_name('init.js').read_text()
+init_js = Path(__file__).parent.joinpath('assets/init.js').read_text()
 
 spaces = re.compile(r'\s*')
 

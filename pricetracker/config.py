@@ -18,6 +18,7 @@ class Config(BaseModel):
     headless: bool = True
     use_chrome: bool = True
     timeout: int = 10
+    backoff_factor: float = 1.0
 
     def __init__(self, **data):
         if 'CONFIG' in os.environ:

@@ -9,7 +9,7 @@ from .api.price import router as price_router
 from .api.user import router as user_router
 from .api.website_config import router as config_router
 from .config import config, logger
-from .task import check_db
+from .task import check_db_in_loop
 
 version = Path(__file__).parent.joinpath('assets/VERSION').read_text()
 app = FastAPI(
@@ -35,6 +35,6 @@ app.include_router(config_router, prefix='/website-config',  tags=['WebsiteConfi
 def on_startup():
     logger.info(f"version={version}")
     logger.info("starting background tasks...")
-    t = Thread(target=check_db, daemon=True)
+    t = Thread(target=check_db_in_loop, daemon=True)
     t.start()
     logger.info("done...")

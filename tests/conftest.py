@@ -70,12 +70,12 @@ def page(user, config, testclient):
 def fresh_db():
     # this fixture needs to be put before other db related fixtures, such as
     # user and config (above)
-    from pricetracker.models import Price, Session, User, WebsiteConfig
+    from pricetracker.models import PriceORM, Session, UserORM, WebsiteConfigORM
 
     sess = Session()
-    sess.query(Price).delete()
-    sess.query(WebsiteConfig).delete()
-    sess.query(User).delete()
+    sess.query(PriceORM).delete()
+    sess.query(WebsiteConfigORM).delete()
+    sess.query(UserORM).delete()
     sess.commit()
     yield
 

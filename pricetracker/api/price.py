@@ -8,9 +8,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm.session import Session
 from starlette import status
 
-from ..models import Page as PageORM
-from ..models import Price as PriceORM
-from ..models import create_session
+from ..models import PageORM, PriceORM, create_session
 from .page import Page
 
 

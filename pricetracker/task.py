@@ -4,40 +4,50 @@ from typing import List, Optional, Tuple, Union
 
 from selenium.common.exceptions import TimeoutException, WebDriverException
 
+from pricetracker.api.page import Page
+from pricetracker.api.price import Price
+from pricetracker.api.website_config import WebsiteConfig
+
 from .config import config, logger
-from .models import Page, Price, WebsiteConfig, create_session_auto
+from .models import PageORM, PriceORM, WebsiteConfigORM, create_session_auto
 from .pushover import send_message
 from .webdriver import track
 
 
 def get_outdated_pages_and_configs() -> List[Tuple[Page, WebsiteConfig]]:
     with create_session_auto() as sess:
-        return (
+        page_config_orms = (
             sess
-            .query(Page, WebsiteConfig)
-            .filter(Page.next_check < datetime.now())
-            .filter(Page.active)
-            .join(WebsiteConfig)
+            .query(PageORM, WebsiteConfigORM)
+            .filter(PageORM.next_check < datetime.now())
+            .filter(PageORM.active)
+            .join(WebsiteConfigORM)
             .all()
         )
+        return [(Page.from_orm(p), WebsiteConfig.from_orm(c))
+                for p, c in page_config_orms]
 
 
-def get_prices(page: Page, limit=30, last_only=False) -> Union[Optional[Price], List[Price]]:
+def get_prices(page: PageORM, limit=30, last_only=False) -> Union[Optional[Price], List[Price]]:
     with create_session_auto() as sess:
         q = (
-            sess.query(Price)
-            .filter(Price.page_id == page.id)
-            .order_by(Price.created_time.desc())
+            sess.query(PriceORM)
+            .filter(PriceORM.page_id == page.id)
+            .order_by(PriceORM.created_time.desc())
         )
         if last_only:
-            return q.first()
-        return q.limit(limit)
+            p = q.first()
+            if p:
+                return Price.from_orm(p)
+            return None
+        return [Price.from_orm(p) for p in q.limit(limit).all()]
 
 
-def add_price(page: Page, price: str):
+def add_price(page: Page, price: str) -> Price:
     with create_session_auto() as sess:
-        price_orm = Price(price=price, page_id=page.id)
+        price_orm = PriceORM(price=price, page_id=page.id)
         sess.add(price_orm)
+        return Price.from_orm(price_orm)
 
 
 def compose_message(page: Page, conf: WebsiteConfig, current_price: str, last_price: str, prices: List[Price]):

@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from ..models import WebsiteConfig as WebsiteConfigORM
+from ..models import WebsiteConfigORM
 from .basic_crud import mount
 
 

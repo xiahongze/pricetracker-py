@@ -7,10 +7,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm.session import Session
 from starlette import status
 
-from ..models import Page as PageORM
-from ..models import User as UserORM
-from ..models import WebsiteConfig as WebsiteConfigORM
-from ..models import create_session
+from ..models import PageORM, UserORM, WebsiteConfigORM, create_session
 from .basic_crud import mount
 from .user import User
 from .website_config import WebsiteConfig

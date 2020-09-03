@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from ..models import User as UserORM
+from ..models import UserORM
 from .basic_crud import mount
 
 

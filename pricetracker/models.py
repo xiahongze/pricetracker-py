@@ -16,26 +16,26 @@ from .config import config
 Base = declarative_base()
 
 
-class User(Base):
+class UserORM(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     po_user = Column(String, nullable=False)
     po_device = Column(String, default='')
-    pages = relationship("Page", back_populates="user", cascade="all, delete, delete-orphan")
+    pages = relationship("PageORM", back_populates="user", cascade="all, delete, delete-orphan")
 
 
-class WebsiteConfig(Base):
+class WebsiteConfigORM(Base):
     __tablename__ = 'website_config'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False, unique=True)
     xpath = Column(String, nullable=False)
-    pages = relationship("Page", back_populates="config", cascade="all, delete, delete-orphan")
+    pages = relationship("PageORM", back_populates="config", cascade="all, delete, delete-orphan")
 
 
-class Page(Base):
+class PageORM(Base):
     __tablename__ = 'pages'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -48,16 +48,16 @@ class Page(Base):
     active = Column(Boolean, default=True)
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    user = relationship("User", back_populates="pages")
+    user = relationship("UserORM", back_populates="pages")
 
     config_id = Column(Integer, ForeignKey('website_config.id'), nullable=False)
-    config = relationship("WebsiteConfig", back_populates="pages")
+    config = relationship("WebsiteConfigORM", back_populates="pages")
 
-    prices = relationship("Price", back_populates="page",
+    prices = relationship("PriceORM", back_populates="page",
                           cascade="all, delete, delete-orphan")
 
 
-class Price(Base):
+class PriceORM(Base):
     __tablename__ = 'price_history'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -65,7 +65,7 @@ class Price(Base):
     created_time = Column(DateTime, default=datetime.now)
 
     page_id = Column(Integer, ForeignKey('pages.id'))
-    page = relationship("Page", back_populates="prices")
+    page = relationship("PageORM", back_populates="prices")
 
 
 engine = create_engine(config.db_path, echo=config.debug)

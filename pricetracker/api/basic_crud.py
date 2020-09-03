@@ -5,7 +5,7 @@ from fastapi.params import Depends
 from sqlalchemy.orm.session import Session
 from starlette import status
 
-from ..models import create_session
+from ..models_orm import create_session
 
 
 def mount(name: str, router: APIRouter, klass_py, klass_orm, ignored=set()):

@@ -9,7 +9,7 @@ from pricetracker.api.price import Price
 from pricetracker.api.website_config import WebsiteConfig
 
 from .config import config, logger
-from .models import PageORM, PriceORM, WebsiteConfigORM, create_session_auto
+from .models_orm import PageORM, PriceORM, WebsiteConfigORM, create_session_auto
 from .pushover import send_message
 from .webdriver import track
 

@@ -70,7 +70,7 @@ def page(user, config, testclient):
 def fresh_db():
     # this fixture needs to be put before other db related fixtures, such as
     # user and config (above)
-    from pricetracker.models import PriceORM, Session, UserORM, WebsiteConfigORM
+    from pricetracker.models_orm import PriceORM, Session, UserORM, WebsiteConfigORM
 
     sess = Session()
     sess.query(PriceORM).delete()

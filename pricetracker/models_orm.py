@@ -33,6 +33,7 @@ class WebsiteConfigORM(Base):
     name = Column(String, nullable=False, unique=True)
     xpath = Column(String, nullable=False)
     pages = relationship("PageORM", back_populates="config", cascade="all, delete, delete-orphan")
+    active = Column(Boolean, default=True)
 
 
 class PageORM(Base):

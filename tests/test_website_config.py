@@ -18,6 +18,7 @@ def test_website_config_api(testclient: TestClient, fresh_db):
     # update
     config1.name = 'config2'
     config1.xpath = 'new xpath'
+    config1.active = False
     resp = testclient.post(f'/website-config/', config1.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_200_OK
 

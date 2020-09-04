@@ -18,6 +18,7 @@ class WebsiteConfig(BaseModel):
     id: Optional[int]
     name: Optional[str]
     xpath: Optional[str]
+    active: Optional[bool]
 
     class Config:
         orm_mode = True

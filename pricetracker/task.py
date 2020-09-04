@@ -19,6 +19,7 @@ def get_outdated_pages_and_configs() -> List[Tuple[Page, WebsiteConfig]]:
             .query(PageORM, WebsiteConfigORM)
             .filter(PageORM.next_check < datetime.now())
             .filter(PageORM.active)
+            .filter(WebsiteConfigORM.active)
             .join(WebsiteConfigORM)
             .all()
         )

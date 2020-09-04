@@ -10,12 +10,12 @@ from .api.user import router as user_router
 from .api.website_config import router as config_router
 from .config import config, logger
 from .task import check_db_in_loop
+from .version import VERSION
 
-version = Path(__file__).parent.joinpath('assets/VERSION').read_text()
 app = FastAPI(
     debug=config.debug,
     title="Price Tracker API",
-    version=version,
+    version=VERSION,
     description="Track Price That Matters"
 )
 

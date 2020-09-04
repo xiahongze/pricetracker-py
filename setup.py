@@ -2,8 +2,9 @@ from pathlib import Path
 
 from setuptools import setup
 
+from pricetracker.version import VERSION
+
 __app__ = 'pricetracker'
-__version__ = Path(__file__).parent.joinpath(f'{__app__}/assets/VERSION').read_text()
 
 
 def get_lines(this_path: Path, filename: str):
@@ -19,7 +20,7 @@ if __name__ == "__main__":
 
     setup(
         name=__app__,
-        version=__version__,
+        version=VERSION,
         author='Hongze Xia',
         url='https://github.com/xiahongze/pricetracker-py',
         description='Price Tracking Application',

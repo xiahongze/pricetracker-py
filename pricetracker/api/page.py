@@ -1,37 +1,13 @@
-from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
-from pydantic import BaseModel
 from sqlalchemy.orm.session import Session
 from starlette import status
 
+from ..models import Page
 from ..models_orm import PageORM, UserORM, WebsiteConfigORM, create_session
 from .basic_crud import mount
-from .user import User
-from .website_config import WebsiteConfig
-
-
-class Page(BaseModel):
-    id: Optional[int]
-    name: Optional[str]
-    url: Optional[str]
-    created_time: Optional[datetime]
-    updated_time: Optional[datetime]
-    freq: Optional[int]
-    retry: Optional[int]
-    active: Optional[bool]
-
-    user_id: Optional[int]
-    user: Optional[User]
-
-    config_id: Optional[int]
-    config: Optional[WebsiteConfig]
-
-    class Config:
-        orm_mode = True
-
 
 router = APIRouter()
 

@@ -1,7 +1,7 @@
 from datetime import datetime
-from pricetracker.api.price import Price
 
 from fastapi.testclient import TestClient
+from pricetracker.models import Price
 from starlette import status
 
 

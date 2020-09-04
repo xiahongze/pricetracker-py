@@ -1,6 +1,6 @@
 from fastapi import status
 from fastapi.testclient import TestClient
-from pricetracker.api.website_config import WebsiteConfig
+from pricetracker.models import WebsiteConfig
 
 
 def test_website_config_api(testclient: TestClient, fresh_db):

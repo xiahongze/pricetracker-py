@@ -40,7 +40,7 @@ def user(testclient):
 def config(testclient):
     # don't import at the beginning of the file
     # because we need to set the env before the package is loaded
-    from pricetracker.api.website_config import WebsiteConfig
+    from pricetracker.models import WebsiteConfig
 
     # add config
     config = WebsiteConfig(name='config1', xpath='interestingxpath')
@@ -54,7 +54,7 @@ def config(testclient):
 
 @pytest.fixture
 def page(user, config, testclient):
-    from pricetracker.api.page import Page
+    from pricetracker.models import Page
 
     # breakpoint()
     page = Page(name='coffee', url='http://example.com/xxx', user_id=user.id, config_id=config.id)
@@ -70,7 +70,8 @@ def page(user, config, testclient):
 def fresh_db():
     # this fixture needs to be put before other db related fixtures, such as
     # user and config (above)
-    from pricetracker.models_orm import PriceORM, Session, UserORM, WebsiteConfigORM
+    from pricetracker.models_orm import (PriceORM, Session, UserORM,
+                                         WebsiteConfigORM)
 
     sess = Session()
     sess.query(PriceORM).delete()

@@ -1,28 +1,14 @@
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 from fastapi.params import Depends
-from pydantic import BaseModel
 from sqlalchemy.orm.session import Session
 from starlette import status
 
+from ..models import Price
 from ..models_orm import PageORM, PriceORM, create_session
-from .page import Page
-
-
-class Price(BaseModel):
-    id: Optional[int]
-    price: str
-    created_time: Optional[datetime]
-
-    page_id: Optional[int]
-    page: Optional[Page]
-
-    class Config:
-        orm_mode = True
-
 
 router = APIRouter()
 

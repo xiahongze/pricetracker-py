@@ -1,6 +1,6 @@
 from fastapi import status
 from fastapi.testclient import TestClient
-from pricetracker.api.user import User
+from pricetracker.models import User
 
 
 def test_user_api(testclient: TestClient, fresh_db):

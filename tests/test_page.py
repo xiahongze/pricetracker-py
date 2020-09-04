@@ -1,6 +1,6 @@
 from fastapi import status
 from fastapi.testclient import TestClient
-from pricetracker.api.page import Page
+from pricetracker.models import Page
 
 
 def test_page_api(testclient: TestClient, fresh_db, user, config):

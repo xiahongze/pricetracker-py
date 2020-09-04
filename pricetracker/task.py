@@ -45,31 +45,34 @@ def add_price(page: Page, price: str) -> Price:
     with create_session_auto() as sess:
         price_orm = PriceORM(price=price, page_id=page.id)
         sess.add(price_orm)
+        sess.flush([price_orm])
         return Price.from_orm(price_orm)
 
 
 def compose_message(page: Page, conf: WebsiteConfig, current_price: str, last_price: str, prices: List[Price]):
-    return f"""{page.name} price changed from {last_price} to {current_price}\n"""
+    return f"{page.name} price changed from {last_price} to {current_price}\n" +\
+        f"Config: {conf}\n" + '\n'.join(f"{p.created_time.isoformat()}: {p.price}" for p in prices)
 
 
 def check_price(page: Page, conf: WebsiteConfig) -> Optional[str]:
-    try:
-        current_price = track(page.url, conf.xpath)
-        page.next_check = timedelta(hours=page.freq) + datetime.now()
-        page.retry = 0
-    except (TimeoutException, WebDriverException) as e:
-        page.retry += 1
-        msg = f"Failed to process page {page} with {conf}. Except: {e.__class__}."
-        logger.error(msg)
-        page.next_check = timedelta(seconds=page.retry * config.pulling_freq) + datetime.now()
-        if page.retry >= config.max_retry:
-            page.active = False
-            msg = f'{msg} Deactivated.'
-        return
-    finally:
-        with create_session_auto() as sess:
+    with create_session_auto() as sess:
+        page = sess.query(PageORM).filter(PageORM.id == page.id).one()
+        try:
+            current_price = track(page.url, conf.xpath)
+            page.next_check = timedelta(hours=page.freq) + datetime.now()
+            page.retry = 0
+        except (TimeoutException, WebDriverException) as e:
+            page.retry += 1
+            msg = f"Failed to process page {page} with {conf}. Except: {e.__class__}."
+            page.next_check = timedelta(seconds=page.retry * config.pulling_freq) + datetime.now()
+            if page.retry >= config.max_retry:
+                page.active = False
+                msg = f'{msg} Deactivated.'
+            logger.error(msg)
+            return
+        finally:
             sess.add(page)
-    return current_price
+        return current_price
 
 
 def check_(page: Page, conf: WebsiteConfig):
@@ -77,8 +80,8 @@ def check_(page: Page, conf: WebsiteConfig):
     if not current_price:
         return
 
-    add_price(page, current_price)
     last_price = get_prices(page, last_only=True)
+    add_price(page, current_price)
     if last_price is None:
         logger.info(f"found the first price for {page.name}")
         return

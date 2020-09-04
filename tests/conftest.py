@@ -81,4 +81,28 @@ def fresh_db():
     yield
 
 
+@pytest.fixture
+def mock_track_except():
+    from pricetracker import task
+    from selenium.common.exceptions import TimeoutException
+
+    def throw(*args):
+        raise TimeoutException()
+
+    origin = task.track
+    task.track = throw
+    yield
+    task.track = origin
+
+
+@pytest.fixture
+def mock_track_two_dollar():
+    from pricetracker import task
+
+    origin = task.track
+    task.track = lambda *args: "$2.00"
+    yield
+    task.track = origin
+
+
 atexit.register(lambda: os.path.exists(tmp_db) and os.unlink(tmp_db))

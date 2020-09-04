@@ -28,16 +28,14 @@ class Page(BaseModel):
     name: Optional[str]
     url: Optional[str]
     created_time: Optional[datetime]
-    updated_time: Optional[datetime]
+    next_check: Optional[datetime]
     freq: Optional[int]
     retry: Optional[int]
     active: Optional[bool]
 
     user_id: Optional[int]
-    user: Optional[User]
 
     config_id: Optional[int]
-    config: Optional[WebsiteConfig]
 
     class Config:
         orm_mode = True
@@ -49,7 +47,6 @@ class Price(BaseModel):
     created_time: Optional[datetime]
 
     page_id: Optional[int]
-    page: Optional[Page]
 
     class Config:
         orm_mode = True

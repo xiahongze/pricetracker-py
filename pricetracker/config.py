@@ -22,7 +22,8 @@ class Config(BaseModel):
 
     def __init__(self, **data):
         if 'CONFIG' in os.environ:
-            data = yaml.safe_load(os.environ['CONFIG'])
+            with open(os.environ['CONFIG']) as f:
+                data = yaml.safe_load(f)
         for k in Config.schema()['properties']:  # only the first layer not cover nested models
             if k.upper() in os.environ:
                 data[k] = os.environ[k.upper()]

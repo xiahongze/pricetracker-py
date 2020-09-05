@@ -33,7 +33,7 @@ app.include_router(config_router, prefix='/website-config',  tags=['WebsiteConfi
 
 @app.on_event("startup")
 def on_startup():
-    logger.info(f"version={version}")
+    logger.info(f"version={VERSION}")
     logger.info("starting background tasks...")
     t = Thread(target=check_db_in_loop, daemon=True)
     t.start()

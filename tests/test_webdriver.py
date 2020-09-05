@@ -7,7 +7,7 @@ from selenium.common.exceptions import TimeoutException, WebDriverException
 @pytest.fixture
 def short_timeout():
     old = config.timeout
-    config.timeout = 10
+    config.timeout = 5
     yield
     config.timeout = old
 
@@ -29,6 +29,13 @@ def test_coles():
 @pytest.mark.skip("manually testing needed")
 def test_chemist():
     url = "https://www.chemistwarehouse.com.au/buy/1062/beconase-hayfever-nasal-spray-200-doses"
+    xpath = '//span[@class="product__price"] | //div[@class="product__price"]'
+    assert '$' in track(url, xpath)
+
+
+@pytest.mark.skip("manually testing needed")
+def test_chemist1():
+    url = "https://www.chemistwarehouse.com.au/buy/78704/nasonex-allergy-280-dose"
     xpath = '//span[@class="product__price"] | //div[@class="product__price"]'
     assert '$' in track(url, xpath)
 

@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import Optional
 
 import yaml
 from pydantic import BaseModel
@@ -19,6 +20,7 @@ class Config(BaseModel):
     use_chrome: bool = True
     timeout: int = 10
     backoff_factor: float = 1.0
+    user_agent: Optional[str]
 
     def __init__(self, **data):
         if 'CONFIG' in os.environ:

@@ -18,7 +18,10 @@ def make_chrome_options():
     excluded_flags = ['enable-automation', 'ignore-certificate-errors']
     options.headless = config.headless
     options.add_argument('--disable-gpu')
-    options.add_argument(f"--user-agent={ua.chrome}")
+    if config.user_agent:
+        options.add_argument(f"--user-agent={config.user_agent}")
+    else:
+        options.add_argument(f"--user-agent={ua.chrome}")
     options.add_experimental_option("excludeSwitches", excluded_flags)
     options.add_argument('--profile-directory=Default')
     options.add_argument("--incognito")
@@ -34,7 +37,10 @@ def make_firefox_options():
     options = webdriver.FirefoxOptions()
     options.headless = config.headless
     profile = webdriver.FirefoxProfile()
-    profile.set_preference("general.useragent.override", ua.firefox)
+    if config.user_agent:
+        profile.set_preference("general.useragent.override", config.user_agent)
+    else:
+        profile.set_preference("general.useragent.override", ua.firefox)
     profile.set_preference("dom.webdriver.enabled", False)
     options.profile = profile
     return options

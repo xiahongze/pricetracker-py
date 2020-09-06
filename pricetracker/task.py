@@ -101,6 +101,7 @@ def _check_once():
         return
     for page, conf in pages_configs:
         check_(page, conf)
+    logger.info("done check once")
 
 
 def check_db_in_loop():

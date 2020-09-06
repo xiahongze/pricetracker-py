@@ -34,6 +34,7 @@ def get_prices(page_id: int, after: datetime = None, sess: Session = Depends(cre
         after = datetime.now() - timedelta(days=30)
     prices = (
         sess.query(PriceORM)
+        .filter(PriceORM.page_id == page_id)
         .filter(PriceORM.created_time >= after)
         .order_by(PriceORM.created_time.desc())
         .all()

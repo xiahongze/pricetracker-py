@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 class Config(BaseModel):
     db_path: str = 'sqlite:///db.sqlite3'
-    debug: bool = True
+    debug: bool = False
     log_output: str = 'app.log'
     pulling_freq: int = 600  # seconds
     fetch_limit: int = 30  # for historical prices

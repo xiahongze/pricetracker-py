@@ -3,7 +3,7 @@ from datetime import datetime
 from pricetracker.models_orm import PageORM, create_session_auto
 from pricetracker.task import (_check_once, add_price, check_, check_price,
                                compose_message, get_outdated_pages_and_configs,
-                               get_prices)
+                               get_prices, get_user)
 
 
 def test_price_add_get(fresh_db, page):
@@ -67,3 +67,7 @@ def test_check_once(fresh_db, mock_track_two_dollar, page, config, caplog):
     assert "found the first price" in caplog.text
     _check_once()
     assert "no outdated pages found" in caplog.text
+
+
+def test_get_user(fresh_db, user):
+    assert get_user(user.id) == user

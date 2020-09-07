@@ -5,8 +5,8 @@ from typing import List, Optional, Tuple, Union
 from selenium.common.exceptions import TimeoutException, WebDriverException
 
 from .config import config, logger
-from .models import Page, Price, WebsiteConfig
-from .models_orm import (PageORM, PriceORM, WebsiteConfigORM,
+from .models import Page, Price, User, WebsiteConfig
+from .models_orm import (PageORM, PriceORM, UserORM, WebsiteConfigORM,
                          create_session_auto)
 from .pushover import send_message
 from .webdriver import track
@@ -50,6 +50,16 @@ def add_price(page: Page, price: str) -> Price:
         return Price.from_orm(price_orm)
 
 
+def get_user(user_id: int) -> User:
+    with create_session_auto() as sess:
+        user_orm = (
+            sess.query(UserORM)
+            .filter(UserORM.id == user_id)
+            .one()
+        )
+        return User.from_orm(user_orm)
+
+
 def compose_message(page: Page, conf: WebsiteConfig, current_price: str, last_price: str, prices: List[Price]):
     return f"{page.name} price changed from {last_price} to {current_price}\n" +\
         f"Config: {conf}\n" + '\n'.join(f"{p.created_time.isoformat()}: {p.price}" for p in prices)
@@ -70,6 +80,8 @@ def check_price(page: Page, conf: WebsiteConfig) -> Optional[str]:
                 page.active = False
                 msg = f'{msg} Deactivated.'
             logger.error(msg)
+            user = get_user(page.user_id)
+            send_message(msg, user.po_user, user.po_device)
             return
         finally:
             sess.add(page)
@@ -91,7 +103,8 @@ def check_(page: Page, conf: WebsiteConfig):
         return
     prices = get_prices(page, limit=config.fetch_limit)
     msg = compose_message(page, conf, current_price, last_price.price, prices)
-    send_message(msg)
+    user = get_user(page.user_id)
+    send_message(msg, user.po_user, user.po_device)
 
 
 def _check_once():
@@ -101,7 +114,6 @@ def _check_once():
         return
     for page, conf in pages_configs:
         check_(page, conf)
-    logger.info("done check once")
 
 
 def check_db_in_loop():
@@ -111,4 +123,5 @@ def check_db_in_loop():
             _check_once()
         except:
             logger.exception("encountered exception in while True")
+        logger.info("done check once")
         time.sleep(config.pulling_freq)

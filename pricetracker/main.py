@@ -1,4 +1,3 @@
-from pathlib import Path
 from threading import Thread
 
 from fastapi import FastAPI
@@ -17,7 +16,7 @@ app = FastAPI(
     debug=config.debug,
     title="Price Tracker API",
     version=VERSION,
-    description="Track Price That Matters"
+    description="Track Prices That Matter"
 )
 
 

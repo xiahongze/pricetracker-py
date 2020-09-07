@@ -12,19 +12,19 @@ from .pushover import send_message
 from .webdriver import track
 
 
-def get_outdated_pages_and_configs() -> List[Tuple[Page, WebsiteConfig]]:
+def get_outdated_pages_with_configs_users() -> List[Tuple[Page, WebsiteConfig, User]]:
     with create_session_auto() as sess:
         page_config_orms = (
             sess
-            .query(PageORM, WebsiteConfigORM)
+            .query(PageORM, WebsiteConfigORM, UserORM)
             .filter(PageORM.next_check < datetime.now())
             .filter(PageORM.active)
             .filter(WebsiteConfigORM.active)
             .join(WebsiteConfigORM)
             .all()
         )
-        return [(Page.from_orm(p), WebsiteConfig.from_orm(c))
-                for p, c in page_config_orms]
+        return [(Page.from_orm(p), WebsiteConfig.from_orm(c), User.from_orm(u))
+                for p, c, u in page_config_orms]
 
 
 def get_prices(page: PageORM, limit=30, last_only=False) -> Union[Optional[Price], List[Price]]:
@@ -50,22 +50,12 @@ def add_price(page: Page, price: str) -> Price:
         return Price.from_orm(price_orm)
 
 
-def get_user(user_id: int) -> User:
-    with create_session_auto() as sess:
-        user_orm = (
-            sess.query(UserORM)
-            .filter(UserORM.id == user_id)
-            .one()
-        )
-        return User.from_orm(user_orm)
-
-
 def compose_message(page: Page, conf: WebsiteConfig, current_price: str, last_price: str, prices: List[Price]):
     return f"{page.name} price changed from {last_price} to {current_price}\n" +\
         f"Config: {conf}\n" + '\n'.join(f"{p.created_time.isoformat()}: {p.price}" for p in prices)
 
 
-def check_price(page: Page, conf: WebsiteConfig) -> Optional[str]:
+def check_price(page: Page, conf: WebsiteConfig, user: User) -> Optional[str]:
     with create_session_auto() as sess:
         page = sess.query(PageORM).filter(PageORM.id == page.id).one()
         try:
@@ -80,7 +70,6 @@ def check_price(page: Page, conf: WebsiteConfig) -> Optional[str]:
                 page.active = False
                 msg = f'{msg} Deactivated.'
             logger.error(msg)
-            user = get_user(page.user_id)
             send_message(msg, user.po_user, user.po_device)
             return
         finally:
@@ -88,8 +77,8 @@ def check_price(page: Page, conf: WebsiteConfig) -> Optional[str]:
         return current_price
 
 
-def check_(page: Page, conf: WebsiteConfig):
-    current_price = check_price(page, conf)
+def check_(page: Page, conf: WebsiteConfig, user: User):
+    current_price = check_price(page, conf, user)
     if not current_price:
         return
 
@@ -103,17 +92,16 @@ def check_(page: Page, conf: WebsiteConfig):
         return
     prices = get_prices(page, limit=config.fetch_limit)
     msg = compose_message(page, conf, current_price, last_price.price, prices)
-    user = get_user(page.user_id)
     send_message(msg, user.po_user, user.po_device)
 
 
 def _check_once():
-    pages_configs = get_outdated_pages_and_configs()
-    if not pages_configs:
+    pages_configs_users = get_outdated_pages_with_configs_users()
+    if not pages_configs_users:
         logger.info("no outdated pages found")
         return
-    for page, conf in pages_configs:
-        check_(page, conf)
+    for page, conf, user in pages_configs_users:
+        check_(page, conf, user)
 
 
 def check_db_in_loop():

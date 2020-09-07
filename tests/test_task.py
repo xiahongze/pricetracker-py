@@ -2,8 +2,8 @@ from datetime import datetime
 
 from pricetracker.models_orm import PageORM, create_session_auto
 from pricetracker.task import (_check_once, add_price, check_, check_price,
-                               compose_message, get_outdated_pages_and_configs,
-                               get_prices, get_user)
+                               compose_message, get_outdated_pages_with_configs_users,
+                               get_prices)
 
 
 def test_price_add_get(fresh_db, page):
@@ -15,7 +15,7 @@ def test_price_add_get(fresh_db, page):
 
 
 def test_get_outdate(fresh_db, page):
-    l = get_outdated_pages_and_configs()
+    l = get_outdated_pages_with_configs_users()
     assert len(l) == 1
 
 
@@ -28,9 +28,9 @@ def test_msg(fresh_db, page, config):
     assert "$1.10" in s and "$1.00" in s
 
 
-def test_check_price_except(fresh_db, mock_track_except, page, config, caplog):
-    assert check_price(page, config) == None
-    l = get_outdated_pages_and_configs()
+def test_check_price_except(fresh_db, mock_track_except, page, config, user, caplog):
+    assert check_price(page, config, user) == None
+    l = get_outdated_pages_with_configs_users()
     assert len(l) == 0
     with create_session_auto() as sess:
         page = sess.query(PageORM).filter(PageORM.id == page.id).one()
@@ -39,9 +39,9 @@ def test_check_price_except(fresh_db, mock_track_except, page, config, caplog):
         assert "Failed to process page" in caplog.text
 
 
-def test_check_price(fresh_db, mock_track_two_dollar, page, config, caplog):
-    assert check_price(page, config) == "$2.00"
-    l = get_outdated_pages_and_configs()
+def test_check_price(fresh_db, mock_track_two_dollar, page, config, user, caplog):
+    assert check_price(page, config, user) == "$2.00"
+    l = get_outdated_pages_with_configs_users()
     assert len(l) == 0
     with create_session_auto() as sess:
         page = sess.query(PageORM).filter(PageORM.id == page.id).one()
@@ -50,15 +50,15 @@ def test_check_price(fresh_db, mock_track_two_dollar, page, config, caplog):
         assert "Failed to process page" not in caplog.text
 
 
-def test_check_except(fresh_db, mock_track_except, page, config, caplog):
-    check_(page, config)
+def test_check_except(fresh_db, mock_track_except, page, config, user, caplog):
+    check_(page, config, user)
     assert "Failed to process page" in caplog.text
 
 
-def test_check_two_dollar(fresh_db, mock_track_two_dollar, page, config, caplog):
-    check_(page, config)
+def test_check_two_dollar(fresh_db, mock_track_two_dollar, page, config, user, caplog):
+    check_(page, config, user)
     assert "found the first price" in caplog.text
-    check_(page, config)
+    check_(page, config, user)
     assert "found the same price" in caplog.text
 
 
@@ -67,7 +67,3 @@ def test_check_once(fresh_db, mock_track_two_dollar, page, config, caplog):
     assert "found the first price" in caplog.text
     _check_once()
     assert "no outdated pages found" in caplog.text
-
-
-def test_get_user(fresh_db, user):
-    assert get_user(user.id) == user

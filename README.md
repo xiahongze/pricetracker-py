@@ -6,5 +6,6 @@ This is a re-write of my *golang* project, [pricetracker](https://github.com/xia
 - SQL as backend supported by sqlalchemy
 - better scraping with Selenium
 - easy configuration with YAML config file
+- 80% test coverage
 
 [Pushover](https://pushover.net/) integration is still supported by default.

@@ -52,7 +52,8 @@ def add_price(page: Page, price: str) -> Price:
 
 def compose_message(page: Page, conf: WebsiteConfig, current_price: str, last_price: str, prices: List[Price]):
     return f"{page.name} price changed from {last_price} to {current_price}\n" +\
-        f"Config: {conf}\n" + '\n'.join(f"{p.created_time.isoformat()}: {p.price}" for p in prices)
+        f"Config: {conf}\nPage: {page}\n" +\
+        '\n'.join(f"{p.created_time.isoformat()}: {p.price}" for p in prices)
 
 
 def check_price(page: Page, conf: WebsiteConfig, user: User) -> Optional[str]:

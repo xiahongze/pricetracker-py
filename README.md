@@ -79,3 +79,4 @@ If the default setting in this app did not work for you, try modify
 ## changelogs
 
 - 0.2.0 more documentations
+- 0.2.1 report page in send_message

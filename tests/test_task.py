@@ -24,7 +24,8 @@ def test_msg(fresh_db, page, config):
     p2 = add_price(page, "$1.10")
 
     s = compose_message(page, config, "$1.10", "$1.00", [p1, p2])
-    assert s.count('\n') == 3
+    assert s.count('\n') == 4
+    assert "url" in s and "xpath" in s
     assert "$1.10" in s and "$1.00" in s
 
 

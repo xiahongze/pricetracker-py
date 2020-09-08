@@ -7,3 +7,5 @@ dist
 *.sqlite3
 htmlcov
 .coverage
+config.yaml
+repopulate.py

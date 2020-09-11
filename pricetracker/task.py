@@ -58,23 +58,23 @@ def compose_message(page: Page, conf: WebsiteConfig, current_price: str, last_pr
 
 def check_price(page: Page, conf: WebsiteConfig, user: User) -> Optional[str]:
     with create_session_auto() as sess:
-        page = sess.query(PageORM).filter(PageORM.id == page.id).one()
+        page_orm = sess.query(PageORM).filter(PageORM.id == page.id).one()
         try:
-            current_price = track(page.url, conf.xpath)
-            page.next_check = timedelta(hours=page.freq) + datetime.now()
-            page.retry = 0
+            current_price = track(page_orm.url, conf.xpath)
+            page_orm.next_check = timedelta(hours=page_orm.freq) + datetime.now()
+            page_orm.retry = 0
         except (TimeoutException, WebDriverException) as e:
-            page.retry += 1
+            page_orm.retry += 1
             msg = f"Failed to process page {page} with {conf}. Except: {e.__class__}."
-            page.next_check = timedelta(seconds=page.retry * config.pulling_freq) + datetime.now()
-            if page.retry >= config.max_retry:
-                page.active = False
+            page_orm.next_check = timedelta(seconds=page_orm.retry * config.pulling_freq) + datetime.now()
+            if page_orm.retry >= config.max_retry:
+                page_orm.active = False
                 msg = f'{msg} Deactivated.'
             logger.error(msg)
             send_message(msg, user.po_user, user.po_device)
             return
         finally:
-            sess.add(page)
+            sess.add(page_orm)
         return current_price
 
 

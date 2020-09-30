@@ -1,6 +1,7 @@
 import time
 from datetime import datetime, timedelta
 from typing import List, Optional, Tuple, Union
+from itertools import islice
 
 from selenium.common.exceptions import TimeoutException, WebDriverException
 
@@ -27,6 +28,17 @@ def get_outdated_pages_with_configs_users() -> List[Tuple[Page, WebsiteConfig, U
                 for p, c, u in page_config_orms]
 
 
+def reduce_prices(prices: List[Price]):
+    if len(prices) == 0:
+        logger.warning(f"found empty prices")
+        return []
+    prices_reduced = [prices[0]]
+    for p in islice(prices, 1, None):
+        if p.price != prices_reduced[-1].price:
+            prices_reduced.append(p)
+    return prices_reduced
+
+
 def get_prices(page: PageORM, limit=30, last_only=False) -> Union[Optional[Price], List[Price]]:
     with create_session_auto() as sess:
         q = (
@@ -39,7 +51,8 @@ def get_prices(page: PageORM, limit=30, last_only=False) -> Union[Optional[Price
             if p:
                 return Price.from_orm(p)
             return None
-        return [Price.from_orm(p) for p in q.limit(limit).all()]
+        prices = [Price.from_orm(p) for p in q.limit(limit).all()]
+        return reduce_prices(prices)
 
 
 def add_price(page: Page, price: str) -> Price:

@@ -1,9 +1,11 @@
 from datetime import datetime
 
+from pricetracker.models import Price
 from pricetracker.models_orm import PageORM, create_session_auto
 from pricetracker.task import (_check_once, add_price, check_, check_price,
-                               compose_message, get_outdated_pages_with_configs_users,
-                               get_prices)
+                               compose_message,
+                               get_outdated_pages_with_configs_users,
+                               get_prices, reduce_prices)
 
 
 def test_price_add_get(fresh_db, page):
@@ -68,3 +70,14 @@ def test_check_once(fresh_db, mock_track_two_dollar, page, config, caplog):
     assert "found the first price" in caplog.text
     _check_once()
     assert "no outdated pages found" in caplog.text
+
+
+def test_reduce_price(caplog):
+    reduce_prices([])
+    assert 'found empty prices' in caplog.text
+    p1 = Price(price='1')
+    p2 = Price(price='2')
+    assert len(reduce_prices([p1])) == 1
+    assert len(reduce_prices([p1, p2])) == 2
+    assert len(reduce_prices([p1, p1, p2])) == 2
+    assert len(reduce_prices([p1, p1, p2, p2, p2])) == 2

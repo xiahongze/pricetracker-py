@@ -26,10 +26,10 @@ def test_coles():
     assert '$' in track(url, xpath)
 
 
-@pytest.mark.skip("manually testing needed")
+# @pytest.mark.skip("manually testing needed")
 def test_chemist():
     url = "https://www.chemistwarehouse.com.au/buy/1062/beconase-hayfever-nasal-spray-200-doses"
-    xpath = '//span[@class="product__price"] | //div[@class="product__price"]'
+    xpath = '//span[@class="product__price"] | //div[@class="product__price"] | //div[@class="Price"]'
     assert '$' in track(url, xpath)
 
 

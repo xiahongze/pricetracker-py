@@ -11,7 +11,7 @@ class Config(BaseModel):
     debug: bool = False
     log_output: str = 'app.log'
     pulling_freq: int = 600  # seconds
-    fetch_limit: int = 30  # for historical prices
+    fetch_limit: int = 60  # for historical prices
     po_app_token: str = ''  # pushover
     max_retry: int = 10
     chrome_driver_path: str = 'chromedriver'

@@ -21,6 +21,7 @@ class Config(BaseModel):
     timeout: int = 10
     backoff_factor: float = 1.0
     user_agent: Optional[str]
+    disable_tracking: bool = False  # disable tracking thread
 
     def __init__(self, **data):
         if 'CONFIG' in os.environ:

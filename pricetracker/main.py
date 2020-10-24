@@ -35,7 +35,10 @@ app.include_router(utils_router, prefix='/utils',  tags=['Utils'])
 @app.on_event("startup")
 def on_startup():
     logger.info(f"version={VERSION}")
-    logger.info("starting background tasks...")
-    t = Thread(target=check_db_in_loop, daemon=True)
-    t.start()
-    logger.info("done...")
+    if not config.disable_tracking:
+        logger.info("starting background tasks...")
+        t = Thread(target=check_db_in_loop, daemon=True)
+        t.start()
+        logger.info("done...")
+    else:
+        logger.info("no tracking mode")

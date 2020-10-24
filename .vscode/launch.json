@@ -12,7 +12,10 @@
             "args": [
                 "pricetracker.main:app",
                 "--reload"
-            ]
+            ],
+            "env": {
+                "CONFIG": "config.yaml"
+            }
         }
     ]
 }

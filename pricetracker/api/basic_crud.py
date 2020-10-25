@@ -2,10 +2,18 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.session import Session
 from starlette import status
 
 from ..models_orm import create_session
+
+
+def get_one_from(query):
+    try:
+        return query.one()
+    except NoResultFound:
+        raise HTTPException(400, f"id not found in the db")
 
 
 def mount(name: str, router: APIRouter, klass_py, klass_orm, ignored=set()):
@@ -24,13 +32,14 @@ def mount(name: str, router: APIRouter, klass_py, klass_orm, ignored=set()):
         return klass_py.from_orm(model_orm)
 
     def get(idx: int, sess: Session = Depends(create_session)):
-        model_orm = sess.query(klass_orm).filter(klass_orm.id == idx).one()
-        return klass_py.from_orm(model_orm)
+        query = sess.query(klass_orm).filter(klass_orm.id == idx)
+        return get_one_from(query)
 
     def update(model_py: klass_py, sess: Session = Depends(create_session)):
         if model_py.id is None:
             raise HTTPException(400, f"{name} id is not given")
-        model_orm: klass_orm = sess.query(klass_orm).filter(klass_orm.id == model_py.id).one()
+        query = sess.query(klass_orm).filter(klass_orm.id == model_py.id)
+        model_orm: klass_orm = get_one_from(query)
         for f, v in model_py.dict(exclude_none=True, exclude_unset=True).items():
             if type(v) is dict:
                 # nested models are usually mapped to foreign key objects
@@ -40,7 +49,8 @@ def mount(name: str, router: APIRouter, klass_py, klass_orm, ignored=set()):
         return
 
     def delete(idx: int, sess: Session = Depends(create_session)):
-        model_orm = sess.query(klass_orm).filter(klass_orm.id == idx).one()
+        query = sess.query(klass_orm).filter(klass_orm.id == idx)
+        model_orm = get_one_from(query)
         sess.delete(model_orm)
         return klass_py.from_orm(model_orm)
 

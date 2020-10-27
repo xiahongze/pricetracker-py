@@ -28,6 +28,7 @@ def make_chrome_options():
     options.add_argument("--start-maximized")
     # below is important to chrome 78+
     options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--no-sandbox")
     # options.add_argument("--disable-plugins-discovery")
     # options.add_argument('--disable-extensions')
     return options

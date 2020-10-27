@@ -28,11 +28,11 @@ def user(testclient):
 
     # add user
     user = User(name='testuser1', po_user='pouser1', po_token='potoken1')
-    resp = testclient.put('/user/', user.json(exclude_unset=True))
+    resp = testclient.put('/api/user/', user.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     user = User(**resp.json())
     yield user
-    resp = testclient.delete(f'/user/?idx={user.id}')
+    resp = testclient.delete(f'/api/user/?idx={user.id}')
     assert resp.status_code == status.HTTP_202_ACCEPTED
 
 
@@ -44,11 +44,11 @@ def config(testclient):
 
     # add config
     config = WebsiteConfig(name='config1', xpath='interestingxpath')
-    resp = testclient.put('/website-config/', config.json(exclude_unset=True))
+    resp = testclient.put('/api/website-config/', config.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     config = WebsiteConfig(**resp.json())
     yield config
-    resp = testclient.delete(f'/website-config/?idx={config.id}')
+    resp = testclient.delete(f'/api/website-config/?idx={config.id}')
     assert resp.status_code == status.HTTP_202_ACCEPTED
 
 
@@ -58,11 +58,11 @@ def page(user, config, testclient):
 
     # breakpoint()
     page = Page(name='coffee', url='http://example.com/xxx', user_id=user.id, config_id=config.id)
-    resp = testclient.put('/page/', page.json(exclude_unset=True))
+    resp = testclient.put('/api/page/', page.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     page = Page(**resp.json())
     yield page
-    resp = testclient.delete(f'/page/?idx={page.id}')
+    resp = testclient.delete(f'/api/page/?idx={page.id}')
     assert resp.status_code == status.HTTP_202_ACCEPTED
 
 

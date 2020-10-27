@@ -16,20 +16,21 @@ app = FastAPI(
     debug=config.debug,
     title="Price Tracker API",
     version=VERSION,
-    description="Track Prices That Matter"
+    description="Track Prices That Matter",
+    docs_url="/api/docs"
 )
 
 
 @app.get("/", summary="OpenAPI docs", tags=["Home"])
 def home():
-    return RedirectResponse("/docs")
+    return RedirectResponse("/api/docs")
 
 
-app.include_router(user_router, prefix='/user',  tags=['User'])
-app.include_router(page_router, prefix='/page',  tags=['Page'])
-app.include_router(price_router, prefix='/price',  tags=['Price'])
-app.include_router(config_router, prefix='/website-config',  tags=['WebsiteConfig'])
-app.include_router(utils_router, prefix='/utils',  tags=['Utils'])
+app.include_router(user_router, prefix='/api/user',  tags=['User'])
+app.include_router(page_router, prefix='/api/page',  tags=['Page'])
+app.include_router(price_router, prefix='/api/price',  tags=['Price'])
+app.include_router(config_router, prefix='/api/website-config',  tags=['WebsiteConfig'])
+app.include_router(utils_router, prefix='/api/utils',  tags=['Utils'])
 
 
 @app.on_event("startup")

@@ -30,6 +30,9 @@ def create_price(price: Price, sess: Session = Depends(create_session)):
 def get_prices(page_id: int, after: datetime = None, sess: Session = Depends(create_session)):
     if page_id is None:
         raise HTTPException(400, "page id is not given")
+    page = sess.query(PageORM).filter(PageORM.id == page_id).scalar()
+    if not page:
+        raise HTTPException(400, f"page id ({page_id}) does not exist")
     if not after:
         after = datetime.now() - timedelta(days=30)
     prices = (

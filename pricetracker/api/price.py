@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import List
 
 from fastapi import APIRouter
@@ -27,7 +27,7 @@ def create_price(price: Price, sess: Session = Depends(create_session)):
 
 
 @router.get('/', response_model=List[Price])
-def get_prices(page_id: int, after: datetime = None, sess: Session = Depends(create_session)):
+def get_prices(page_id: int, after: date = None, sess: Session = Depends(create_session)):
     if page_id is None:
         raise HTTPException(400, "page id is not given")
     page = sess.query(PageORM).filter(PageORM.id == page_id).scalar()

@@ -9,3 +9,5 @@ htmlcov
 .coverage
 config.yaml
 repopulate.py
+.venv
+.ruff_cache

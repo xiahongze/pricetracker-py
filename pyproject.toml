@@ -6,6 +6,7 @@ authors = ["Hong Xia <hongze.x@gmail.com>"]
 license = "GNU"
 readme = "README.md"
 packages = [{include = "pricetracker"}]
+repository = "https://github.com/xiahongze/pricetracker-py"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -61,8 +62,7 @@ exclude = [
     "venv",
 ]
 
-# Same as Black.
-line-length = 88
+line-length = 120
 
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"

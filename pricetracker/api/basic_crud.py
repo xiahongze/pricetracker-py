@@ -13,7 +13,7 @@ def get_one_from(query):
     try:
         return query.one()
     except NoResultFound:
-        raise HTTPException(400, f"id not found in the db")
+        raise HTTPException(400, "id not found in the db")
 
 
 def mount(name: str, router: APIRouter, klass_py, klass_orm, ignored=set()):

@@ -9,7 +9,7 @@ from pricetracker.task import (_check_once, add_price, check_, check_price,
 
 
 def test_price_add_get(fresh_db, page):
-    assert get_prices(page, last_only=True) == None
+    assert get_prices(page, last_only=True) is None
     assert get_prices(page) == []
 
     p = add_price(page, "$1.00")
@@ -17,8 +17,7 @@ def test_price_add_get(fresh_db, page):
 
 
 def test_get_outdate(fresh_db, page):
-    l = get_outdated_pages_with_configs_users()
-    assert len(l) == 1
+    assert len(get_outdated_pages_with_configs_users()) == 1
 
 
 def test_msg(fresh_db, page, config):
@@ -32,9 +31,8 @@ def test_msg(fresh_db, page, config):
 
 
 def test_check_price_except(fresh_db, mock_track_except, page, config, user, caplog):
-    assert check_price(page, config, user) == None
-    l = get_outdated_pages_with_configs_users()
-    assert len(l) == 0
+    assert check_price(page, config, user) is None
+    assert len(get_outdated_pages_with_configs_users()) == 0
     with create_session_auto() as sess:
         page = sess.query(PageORM).filter(PageORM.id == page.id).one()
         assert page.retry == 1
@@ -44,8 +42,7 @@ def test_check_price_except(fresh_db, mock_track_except, page, config, user, cap
 
 def test_check_price(fresh_db, mock_track_two_dollar, page, config, user, caplog):
     assert check_price(page, config, user) == "$2.00"
-    l = get_outdated_pages_with_configs_users()
-    assert len(l) == 0
+    assert len(get_outdated_pages_with_configs_users()) == 0
     with create_session_auto() as sess:
         page = sess.query(PageORM).filter(PageORM.id == page.id).one()
         assert page.retry == 0

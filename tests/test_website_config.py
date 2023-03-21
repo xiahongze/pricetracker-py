@@ -6,7 +6,7 @@ from pricetracker.models import WebsiteConfig
 def test_website_config_api(testclient: TestClient, fresh_db):
     # create
     config = WebsiteConfig(name='testconfig', xpath='some xpath')
-    resp = testclient.put('/api/website-config/', config.json(exclude_unset=True))
+    resp = testclient.put('/api/website-config/', data=config.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     config1 = WebsiteConfig(**resp.json())
 
@@ -19,7 +19,7 @@ def test_website_config_api(testclient: TestClient, fresh_db):
     config1.name = 'config2'
     config1.xpath = 'new xpath'
     config1.active = False
-    resp = testclient.post(f'/api/website-config/', config1.json(exclude_unset=True))
+    resp = testclient.post('/api/website-config/', data=config1.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_200_OK
 
     # get
@@ -29,12 +29,12 @@ def test_website_config_api(testclient: TestClient, fresh_db):
 
     # add another
     config = WebsiteConfig(name='testconfig2', xpath='some xpath2')
-    resp = testclient.put('/api/website-config/', config.json(exclude_unset=True))
+    resp = testclient.put('/api/website-config/', data=config.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     config2 = WebsiteConfig(**resp.json())
 
     # list
-    resp = testclient.get(f'/api/website-config/list/')
+    resp = testclient.get('/api/website-config/list/')
     assert resp.status_code == status.HTTP_200_OK
     assert len(resp.json()) == 2
 
@@ -42,6 +42,6 @@ def test_website_config_api(testclient: TestClient, fresh_db):
     resp = testclient.delete(f'/api/website-config/?idx={config2.id}')
     assert resp.status_code == status.HTTP_202_ACCEPTED
     # list
-    resp = testclient.get(f'/api/website-config/list/')
+    resp = testclient.get('/api/website-config/list/')
     assert resp.status_code == status.HTTP_200_OK
     assert len(resp.json()) == 1

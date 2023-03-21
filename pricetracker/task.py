@@ -30,7 +30,7 @@ def get_outdated_pages_with_configs_users() -> List[Tuple[Page, WebsiteConfig, U
 
 def reduce_prices(prices: List[Price]):
     if len(prices) == 0:
-        logger.warning(f"found empty prices")
+        logger.warning("found empty prices")
         return []
     prices_reduced = [prices[0]]
     for p in islice(prices, 1, None):
@@ -123,7 +123,7 @@ def check_db_in_loop():
         logger.info('checking db...')
         try:
             _check_once()
-        except:
+        except: # noqa: E722
             logger.exception("encountered exception in while True")
         logger.info("done check once")
         time.sleep(config.pulling_freq)

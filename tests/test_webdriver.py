@@ -22,7 +22,7 @@ def test_woolies():
 @pytest.mark.skip("manually testing needed")
 def test_coles():
     url = 'https://shop.coles.com.au/a/national/product/grinders-espresso-coffee-beans'
-    xpath = '//span/strong[@class="product-price"] | //*[@id="main-content-inside"]/div[2]/div/header/div[3]/div/span[1]'
+    xpath = '//span/strong[@class="product-price"] | //*[@id="main-content-inside"]/div[2]/div/header/div[3]/div/span[1]' # noqa: E501
     assert '$' in track(url, xpath)
 
 

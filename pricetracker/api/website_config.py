@@ -6,4 +6,4 @@ from .basic_crud import mount
 
 router = APIRouter()
 
-mount('WebsiteConfig', router, WebsiteConfig, WebsiteConfigORM)
+mount("WebsiteConfig", router, WebsiteConfig, WebsiteConfigORM)

@@ -2,14 +2,20 @@ from datetime import datetime
 
 from pricetracker.models import Price
 from pricetracker.models_orm import PageORM, create_session_auto
-from pricetracker.task import (_check_once, add_price, check_, check_price,
-                               compose_message,
-                               get_outdated_pages_with_configs_users,
-                               get_prices, reduce_prices)
+from pricetracker.task import (
+    _check_once,
+    add_price,
+    check_,
+    check_price,
+    compose_message,
+    get_outdated_pages_with_configs_users,
+    get_prices,
+    reduce_prices,
+)
 
 
 def test_price_add_get(fresh_db, page):
-    assert get_prices(page, last_only=True) == None
+    assert get_prices(page, last_only=True) is None
     assert get_prices(page) == []
 
     p = add_price(page, "$1.00")
@@ -17,8 +23,7 @@ def test_price_add_get(fresh_db, page):
 
 
 def test_get_outdate(fresh_db, page):
-    l = get_outdated_pages_with_configs_users()
-    assert len(l) == 1
+    assert len(get_outdated_pages_with_configs_users()) == 1
 
 
 def test_msg(fresh_db, page, config):
@@ -26,15 +31,14 @@ def test_msg(fresh_db, page, config):
     p2 = add_price(page, "$1.10")
 
     s = compose_message(page, config, "$1.10", "$1.00", [p1, p2])
-    assert s.count('\n') == 4
+    assert s.count("\n") == 4
     assert "url" in s and "xpath" in s
     assert "$1.10" in s and "$1.00" in s
 
 
 def test_check_price_except(fresh_db, mock_track_except, page, config, user, caplog):
-    assert check_price(page, config, user) == None
-    l = get_outdated_pages_with_configs_users()
-    assert len(l) == 0
+    assert check_price(page, config, user) is None
+    assert len(get_outdated_pages_with_configs_users()) == 0
     with create_session_auto() as sess:
         page = sess.query(PageORM).filter(PageORM.id == page.id).one()
         assert page.retry == 1
@@ -44,8 +48,7 @@ def test_check_price_except(fresh_db, mock_track_except, page, config, user, cap
 
 def test_check_price(fresh_db, mock_track_two_dollar, page, config, user, caplog):
     assert check_price(page, config, user) == "$2.00"
-    l = get_outdated_pages_with_configs_users()
-    assert len(l) == 0
+    assert len(get_outdated_pages_with_configs_users()) == 0
     with create_session_auto() as sess:
         page = sess.query(PageORM).filter(PageORM.id == page.id).one()
         assert page.retry == 0
@@ -74,9 +77,9 @@ def test_check_once(fresh_db, mock_track_two_dollar, page, config, caplog):
 
 def test_reduce_price(caplog):
     reduce_prices([])
-    assert 'found empty prices' in caplog.text
-    p1 = Price(price='1')
-    p2 = Price(price='2')
+    assert "found empty prices" in caplog.text
+    p1 = Price(price="1")
+    p2 = Price(price="2")
     assert len(reduce_prices([p1])) == 1
     assert len(reduce_prices([p1, p2])) == 2
     assert len(reduce_prices([p1, p1, p2])) == 2

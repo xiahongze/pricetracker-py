@@ -1,7 +1,7 @@
 *.pyc
 build
 dist
-.vscode/settings.json
+.vscode
 .idea
 *.log
 *.sqlite3
@@ -9,3 +9,5 @@ htmlcov
 .coverage
 config.yaml
 repopulate.py
+.venv
+.ruff_cache

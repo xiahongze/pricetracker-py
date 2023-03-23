@@ -13,7 +13,7 @@ def get_one_from(query):
     try:
         return query.one()
     except NoResultFound:
-        raise HTTPException(400, f"id not found in the db")
+        raise HTTPException(400, "id not found in the db")
 
 
 def mount(name: str, router: APIRouter, klass_py, klass_orm, ignored=set()):
@@ -25,6 +25,7 @@ def mount(name: str, router: APIRouter, klass_py, klass_orm, ignored=set()):
     :param ignored: set of names to ignore, only from
         create, read, update, delete, list
     """
+
     def create(model_py: klass_py, sess: Session = Depends(create_session)):
         model_orm = klass_orm(**model_py.dict(exclude_none=True, exclude_unset=True))
         sess.add(model_orm)
@@ -57,13 +58,17 @@ def mount(name: str, router: APIRouter, klass_py, klass_orm, ignored=set()):
     def list_all(sess: Session = Depends(create_session)):
         return [klass_py.from_orm(u) for u in sess.query(klass_orm).all()]
 
-    if 'create' not in ignored:
-        router.put('/', response_model=klass_py, status_code=status.HTTP_201_CREATED)(create)
-    if 'read' not in ignored:
-        router.get('/', response_model=klass_py)(get)
-    if 'update' not in ignored:
-        router.post('/')(update)
-    if 'delete' not in ignored:
-        router.delete('/', response_model=klass_py, status_code=status.HTTP_202_ACCEPTED)(delete)
-    if 'list' not in ignored:
-        router.get('/list', response_model=List[klass_py])(list_all)
+    if "create" not in ignored:
+        router.put("/", response_model=klass_py, status_code=status.HTTP_201_CREATED)(
+            create
+        )
+    if "read" not in ignored:
+        router.get("/", response_model=klass_py)(get)
+    if "update" not in ignored:
+        router.post("/")(update)
+    if "delete" not in ignored:
+        router.delete(
+            "/", response_model=klass_py, status_code=status.HTTP_202_ACCEPTED
+        )(delete)
+    if "list" not in ignored:
+        router.get("/list", response_model=List[klass_py])(list_all)

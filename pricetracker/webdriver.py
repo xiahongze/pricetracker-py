@@ -15,21 +15,21 @@ try:
     ua_chrome = ua.chrome
     ua_firefox = ua.firefox
 except FakeUserAgentError:
-    ua_chrome = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.2 (KHTML, like Gecko) Chrome/22.0.1216.0 Safari/537.2'
-    ua_firefox = 'Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:16.0.1) Gecko/20121011 Firefox/16.0.1'
+    ua_chrome = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.2 (KHTML, like Gecko) Chrome/22.0.1216.0 Safari/537.2"
+    ua_firefox = "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:16.0.1) Gecko/20121011 Firefox/16.0.1"
 
 
 def make_chrome_options():
     options = webdriver.ChromeOptions()
-    excluded_flags = ['enable-automation', 'ignore-certificate-errors']
+    excluded_flags = ["enable-automation", "ignore-certificate-errors"]
     options.headless = config.headless
-    options.add_argument('--disable-gpu')
+    options.add_argument("--disable-gpu")
     if config.user_agent:
         options.add_argument(f"--user-agent={config.user_agent}")
     else:
         options.add_argument(f"--user-agent={ua_chrome}")
     options.add_experimental_option("excludeSwitches", excluded_flags)
-    options.add_argument('--profile-directory=Default')
+    options.add_argument("--profile-directory=Default")
     options.add_argument("--incognito")
     options.add_argument("--start-maximized")
     # below is important to chrome 78+
@@ -53,22 +53,28 @@ def make_firefox_options():
     return options
 
 
-init_js = Path(__file__).parent.joinpath('assets/init.js').read_text()
+init_js = Path(__file__).parent.joinpath("assets/init.js").read_text()
 
-spaces = re.compile(r'\s*')
+spaces = re.compile(r"\s*")
 
 
 def clean_text(text: str):
-    return spaces.sub('', text)
+    return spaces.sub("", text)
 
 
 def track(url: str, xpath: str, use_chrome=config.use_chrome):
     if use_chrome:
-        make_driver = partial(webdriver.Chrome, executable_path=config.chrome_driver_path,
-                              options=make_chrome_options())
+        make_driver = partial(
+            webdriver.Chrome,
+            executable_path=config.chrome_driver_path,
+            options=make_chrome_options(),
+        )
     else:
-        make_driver = partial(webdriver.Firefox, executable_path=config.gecko_driver_path,
-                              options=make_firefox_options())
+        make_driver = partial(
+            webdriver.Firefox,
+            executable_path=config.gecko_driver_path,
+            options=make_firefox_options(),
+        )
 
     with make_driver() as driver:
         driver.set_page_load_timeout(config.timeout)
@@ -77,9 +83,8 @@ def track(url: str, xpath: str, use_chrome=config.use_chrome):
         driver.get(url)
         # breakpoint()
         el = WebDriverWait(driver, config.timeout).until(
-            EC.presence_of_element_located(
-                (By.XPATH, xpath)
-            ))
+            EC.presence_of_element_located((By.XPATH, xpath))
+        )
         logger.info(f"fetch page {driver.title}")
         text = clean_text(el.text)
         logger.info(f"Xpath ({xpath}): {text}")

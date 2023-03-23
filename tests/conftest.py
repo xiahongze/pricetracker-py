@@ -9,8 +9,8 @@ from starlette import status
 # sqlite:///:memory: (or, sqlite://)
 # sqlite:///relative/path/to/file.db
 # sqlite:////absolute/path/to/file.db
-tmp_db = mktemp(suffix='.sqlite3')
-os.environ['DB_PATH'] = f'sqlite:///{tmp_db}'
+tmp_db = mktemp(suffix=".sqlite3")
+os.environ["DB_PATH"] = f"sqlite:///{tmp_db}"
 
 
 @pytest.fixture(scope="session")
@@ -27,12 +27,12 @@ def user(testclient):
     from pricetracker.api.user import User
 
     # add user
-    user = User(name='testuser1', po_user='pouser1', po_token='potoken1')
-    resp = testclient.put('/api/user/', user.json(exclude_unset=True))
+    user = User(name="testuser1", po_user="pouser1", po_token="potoken1")
+    resp = testclient.put("/api/user/", data=user.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     user = User(**resp.json())
     yield user
-    resp = testclient.delete(f'/api/user/?idx={user.id}')
+    resp = testclient.delete(f"/api/user/?idx={user.id}")
     assert resp.status_code == status.HTTP_202_ACCEPTED
 
 
@@ -43,12 +43,12 @@ def config(testclient):
     from pricetracker.models import WebsiteConfig
 
     # add config
-    config = WebsiteConfig(name='config1', xpath='interestingxpath')
-    resp = testclient.put('/api/website-config/', config.json(exclude_unset=True))
+    config = WebsiteConfig(name="config1", xpath="interestingxpath")
+    resp = testclient.put("/api/website-config/", data=config.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     config = WebsiteConfig(**resp.json())
     yield config
-    resp = testclient.delete(f'/api/website-config/?idx={config.id}')
+    resp = testclient.delete(f"/api/website-config/?idx={config.id}")
     assert resp.status_code == status.HTTP_202_ACCEPTED
 
 
@@ -57,12 +57,17 @@ def page(user, config, testclient):
     from pricetracker.models import Page
 
     # breakpoint()
-    page = Page(name='coffee', url='http://example.com/xxx', user_id=user.id, config_id=config.id)
-    resp = testclient.put('/api/page/', page.json(exclude_unset=True))
+    page = Page(
+        name="coffee",
+        url="http://example.com/xxx",
+        user_id=user.id,
+        config_id=config.id,
+    )
+    resp = testclient.put("/api/page/", data=page.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     page = Page(**resp.json())
     yield page
-    resp = testclient.delete(f'/api/page/?idx={page.id}')
+    resp = testclient.delete(f"/api/page/?idx={page.id}")
     assert resp.status_code == status.HTTP_202_ACCEPTED
 
 
@@ -70,8 +75,7 @@ def page(user, config, testclient):
 def fresh_db():
     # this fixture needs to be put before other db related fixtures, such as
     # user and config (above)
-    from pricetracker.models_orm import (PriceORM, Session, UserORM,
-                                         WebsiteConfigORM)
+    from pricetracker.models_orm import PriceORM, Session, UserORM, WebsiteConfigORM
 
     sess = Session()
     sess.query(PriceORM).delete()
@@ -83,8 +87,9 @@ def fresh_db():
 
 @pytest.fixture
 def mock_track_except():
-    from pricetracker import task
     from selenium.common.exceptions import TimeoutException
+
+    from pricetracker import task
 
     def throw(*args):
         raise TimeoutException()

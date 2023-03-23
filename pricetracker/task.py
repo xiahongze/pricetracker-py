@@ -1,14 +1,19 @@
 import time
 from datetime import datetime, timedelta
-from typing import List, Optional, Tuple, Union
 from itertools import islice
+from typing import List, Optional, Tuple, Union
 
 from selenium.common.exceptions import TimeoutException, WebDriverException
 
 from .config import config, logger
 from .models import Page, Price, User, WebsiteConfig
-from .models_orm import (PageORM, PriceORM, UserORM, WebsiteConfigORM,
-                         create_session_auto)
+from .models_orm import (
+    PageORM,
+    PriceORM,
+    UserORM,
+    WebsiteConfigORM,
+    create_session_auto,
+)
 from .pushover import send_message
 from .webdriver import track
 
@@ -16,21 +21,22 @@ from .webdriver import track
 def get_outdated_pages_with_configs_users() -> List[Tuple[Page, WebsiteConfig, User]]:
     with create_session_auto() as sess:
         page_config_orms = (
-            sess
-            .query(PageORM, WebsiteConfigORM, UserORM)
+            sess.query(PageORM, WebsiteConfigORM, UserORM)
             .filter(PageORM.next_check < datetime.now())
             .filter(PageORM.active)
             .filter(WebsiteConfigORM.active)
             .join(WebsiteConfigORM)
             .all()
         )
-        return [(Page.from_orm(p), WebsiteConfig.from_orm(c), User.from_orm(u))
-                for p, c, u in page_config_orms]
+        return [
+            (Page.from_orm(p), WebsiteConfig.from_orm(c), User.from_orm(u))
+            for p, c, u in page_config_orms
+        ]
 
 
 def reduce_prices(prices: List[Price]):
     if len(prices) == 0:
-        logger.warning(f"found empty prices")
+        logger.warning("found empty prices")
         return []
     prices_reduced = [prices[0]]
     for p in islice(prices, 1, None):
@@ -39,7 +45,9 @@ def reduce_prices(prices: List[Price]):
     return prices_reduced
 
 
-def get_prices(page: PageORM, limit=30, last_only=False) -> Union[Optional[Price], List[Price]]:
+def get_prices(
+    page: PageORM, limit=30, last_only=False
+) -> Union[Optional[Price], List[Price]]:
     with create_session_auto() as sess:
         q = (
             sess.query(PriceORM)
@@ -63,10 +71,18 @@ def add_price(page: Page, price: str) -> Price:
         return Price.from_orm(price_orm)
 
 
-def compose_message(page: Page, conf: WebsiteConfig, current_price: str, last_price: str, prices: List[Price]):
-    return f"{page.name} price changed from {last_price} to {current_price}\n" +\
-        f"Config: {conf}\nPage: {page}\n" +\
-        '\n'.join(f"{p.created_time.isoformat()}: {p.price}" for p in prices)
+def compose_message(
+    page: Page,
+    conf: WebsiteConfig,
+    current_price: str,
+    last_price: str,
+    prices: List[Price],
+):
+    return (
+        f"{page.name} price changed from {last_price} to {current_price}\n"
+        + f"Config: {conf}\nPage: {page}\n"
+        + "\n".join(f"{p.created_time.isoformat()}: {p.price}" for p in prices)
+    )
 
 
 def check_price(page: Page, conf: WebsiteConfig, user: User) -> Optional[str]:
@@ -79,10 +95,12 @@ def check_price(page: Page, conf: WebsiteConfig, user: User) -> Optional[str]:
         except (TimeoutException, WebDriverException) as e:
             page_orm.retry += 1
             msg = f"Failed to process page {page} with {conf}. Except: {e.__class__}."
-            page_orm.next_check = timedelta(seconds=page_orm.retry * config.pulling_freq) + datetime.now()
+            page_orm.next_check = (
+                timedelta(seconds=page_orm.retry * config.pulling_freq) + datetime.now()
+            )
             if page_orm.retry >= config.max_retry:
                 page_orm.active = False
-                msg = f'{msg} Deactivated.'
+                msg = f"{msg} Deactivated."
             logger.error(msg)
             send_message(msg, user.po_user, user.po_device)
             return
@@ -120,10 +138,10 @@ def _check_once():
 
 def check_db_in_loop():
     while True:
-        logger.info('checking db...')
+        logger.info("checking db...")
         try:
             _check_once()
-        except:
+        except:  # noqa: E722
             logger.exception("encountered exception in while True")
         logger.info("done check once")
         time.sleep(config.pulling_freq)

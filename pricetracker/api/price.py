@@ -13,7 +13,7 @@ from ..models_orm import PageORM, PriceORM, create_session
 router = APIRouter()
 
 
-@router.put('/', response_model=Price, status_code=status.HTTP_201_CREATED)
+@router.put("/", response_model=Price, status_code=status.HTTP_201_CREATED)
 def create_price(price: Price, sess: Session = Depends(create_session)):
     if price.page_id is None:
         raise HTTPException(400, "page id is not given")
@@ -26,8 +26,10 @@ def create_price(price: Price, sess: Session = Depends(create_session)):
     return Price.from_orm(priceOrm)
 
 
-@router.get('/', response_model=List[Price])
-def get_prices(page_id: int, after: date = None, sess: Session = Depends(create_session)):
+@router.get("/", response_model=List[Price])
+def get_prices(
+    page_id: int, after: date = None, sess: Session = Depends(create_session)
+):
     if page_id is None:
         raise HTTPException(400, "page id is not given")
     page = sess.query(PageORM).filter(PageORM.id == page_id).scalar()
@@ -45,7 +47,7 @@ def get_prices(page_id: int, after: date = None, sess: Session = Depends(create_
     return [Price.from_orm(p) for p in prices]
 
 
-@router.delete('/', response_model=Price, status_code=status.HTTP_202_ACCEPTED)
+@router.delete("/", response_model=Price, status_code=status.HTTP_202_ACCEPTED)
 def delete_price(idx: int, sess: Session = Depends(create_session)):
     price_orm = sess.query(PriceORM).filter(PriceORM.id == idx).one()
     sess.delete(price_orm)

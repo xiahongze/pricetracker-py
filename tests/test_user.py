@@ -7,7 +7,7 @@ from pricetracker.models import User
 def test_user_api(testclient: TestClient, fresh_db):
     # create
     user = User(name="testuser1", po_user="pouser1", po_token="potoken1")
-    resp = testclient.put("/api/user/", data=user.json(exclude_unset=True))
+    resp = testclient.put("/api/user/", content=user.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     user1 = User(**resp.json())
 
@@ -20,7 +20,7 @@ def test_user_api(testclient: TestClient, fresh_db):
     user1.name = "user2"
     user1.po_user = "newposuser"
     user1.po_device = "device"
-    resp = testclient.post("/api/user/", data=user1.json(exclude_unset=True))
+    resp = testclient.post("/api/user/", content=user1.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_200_OK
 
     # get
@@ -30,7 +30,7 @@ def test_user_api(testclient: TestClient, fresh_db):
 
     # add another
     user = User(name="testuser2", po_user="pouser2", po_token="potoken2")
-    resp = testclient.put("/api/user/", data=user.json(exclude_unset=True))
+    resp = testclient.put("/api/user/", content=user.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     user2 = User(**resp.json())
 

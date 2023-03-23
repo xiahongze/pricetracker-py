@@ -4,7 +4,8 @@ from urllib3.util.retry import Retry
 
 from .config import config, logger
 
-s = requests.Session()
+session = requests.Session()
+PUSHOVER_URL = "https://api.pushover.net/1/messages.json"
 
 retries = Retry(
     total=config.max_retry,
@@ -12,8 +13,8 @@ retries = Retry(
     status_forcelist=[500, 502, 503, 504],
 )
 
-s.mount("http://", HTTPAdapter(max_retries=retries))
-s.mount("https://", HTTPAdapter(max_retries=retries))
+session.mount("http://", HTTPAdapter(max_retries=retries))
+session.mount("https://", HTTPAdapter(max_retries=retries))
 
 
 def send_message(msg: str, po_user: str, po_device: str):
@@ -26,7 +27,7 @@ def send_message(msg: str, po_user: str, po_device: str):
         "user": po_user,
         "device": po_device,
     }
-    resp = s.post(url="https://api.pushover.net/1/messages.json", json=d)
+    resp = session.post(url=PUSHOVER_URL, json=d)
     if resp.status_code != 200:
         logger.warning(f"pushover resp status: {resp.status_code}")
         logger.warning(f"pushover resp: {resp.content.decode()}")

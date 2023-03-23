@@ -23,6 +23,7 @@ def get_outdated_pages_with_configs_users() -> List[Tuple[Page, WebsiteConfig, U
     with create_session_auto() as sess:
         page_config_orms = (
             sess.query(PageORM, WebsiteConfigORM, UserORM)
+            .filter(PageORM.user_id == UserORM.id)
             .filter(PageORM.next_check < datetime.now())
             .filter(PageORM.active)
             .filter(WebsiteConfigORM.active)

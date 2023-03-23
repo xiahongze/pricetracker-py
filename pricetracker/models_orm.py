@@ -6,8 +6,7 @@ from typing import Any, Generator
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.engine import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.orm.session import Session as SessionType
 from sqlalchemy.orm.session import sessionmaker
 
@@ -17,27 +16,31 @@ Base = declarative_base()
 
 
 class UserORM(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     po_user = Column(String, nullable=False)
-    po_device = Column(String, default='')
-    pages = relationship("PageORM", back_populates="user", cascade="all, delete, delete-orphan")
+    po_device = Column(String, default="")
+    pages = relationship(
+        "PageORM", back_populates="user", cascade="all, delete, delete-orphan"
+    )
 
 
 class WebsiteConfigORM(Base):
-    __tablename__ = 'website_config'
+    __tablename__ = "website_config"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False, unique=True)
     xpath = Column(String, nullable=False)
-    pages = relationship("PageORM", back_populates="config", cascade="all, delete, delete-orphan")
+    pages = relationship(
+        "PageORM", back_populates="config", cascade="all, delete, delete-orphan"
+    )
     active = Column(Boolean, default=True)
 
 
 class PageORM(Base):
-    __tablename__ = 'pages'
+    __tablename__ = "pages"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
@@ -48,28 +51,31 @@ class PageORM(Base):
     retry = Column(Integer, default=0)  # counter
     active = Column(Boolean, default=True)
 
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     user = relationship("UserORM", back_populates="pages")
 
-    config_id = Column(Integer, ForeignKey('website_config.id'), nullable=False)
+    config_id = Column(Integer, ForeignKey("website_config.id"), nullable=False)
     config = relationship("WebsiteConfigORM", back_populates="pages")
 
-    prices = relationship("PriceORM", back_populates="page",
-                          cascade="all, delete, delete-orphan")
+    prices = relationship(
+        "PriceORM", back_populates="page", cascade="all, delete, delete-orphan"
+    )
 
 
 class PriceORM(Base):
-    __tablename__ = 'price_history'
+    __tablename__ = "price_history"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     price = Column(String, nullable=False)
     created_time = Column(DateTime, default=datetime.now)
 
-    page_id = Column(Integer, ForeignKey('pages.id'))
+    page_id = Column(Integer, ForeignKey("pages.id"))
     page = relationship("PageORM", back_populates="prices")
 
 
-engine = create_engine(config.db_path, echo=config.debug, connect_args={'check_same_thread': False})
+engine = create_engine(
+    config.db_path, echo=config.debug, connect_args={"check_same_thread": False}
+)
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 

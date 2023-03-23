@@ -6,4 +6,4 @@ from .basic_crud import mount
 
 router = APIRouter()
 
-mount('user', router, User, UserORM)
+mount("user", router, User, UserORM)

@@ -2,10 +2,16 @@ from datetime import datetime
 
 from pricetracker.models import Price
 from pricetracker.models_orm import PageORM, create_session_auto
-from pricetracker.task import (_check_once, add_price, check_, check_price,
-                               compose_message,
-                               get_outdated_pages_with_configs_users,
-                               get_prices, reduce_prices)
+from pricetracker.task import (
+    _check_once,
+    add_price,
+    check_,
+    check_price,
+    compose_message,
+    get_outdated_pages_with_configs_users,
+    get_prices,
+    reduce_prices,
+)
 
 
 def test_price_add_get(fresh_db, page):
@@ -25,7 +31,7 @@ def test_msg(fresh_db, page, config):
     p2 = add_price(page, "$1.10")
 
     s = compose_message(page, config, "$1.10", "$1.00", [p1, p2])
-    assert s.count('\n') == 4
+    assert s.count("\n") == 4
     assert "url" in s and "xpath" in s
     assert "$1.10" in s and "$1.00" in s
 
@@ -71,9 +77,9 @@ def test_check_once(fresh_db, mock_track_two_dollar, page, config, caplog):
 
 def test_reduce_price(caplog):
     reduce_prices([])
-    assert 'found empty prices' in caplog.text
-    p1 = Price(price='1')
-    p2 = Price(price='2')
+    assert "found empty prices" in caplog.text
+    p1 = Price(price="1")
+    p2 = Price(price="2")
     assert len(reduce_prices([p1])) == 1
     assert len(reduce_prices([p1, p2])) == 2
     assert len(reduce_prices([p1, p1, p2])) == 2

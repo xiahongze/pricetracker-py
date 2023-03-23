@@ -18,9 +18,12 @@ def random_future(within: int) -> datetime:
 router = APIRouter()
 
 
-@router.get('/randomize_checks/', status_code=status.HTTP_200_OK,
-            description="distribute checks within future X minutes")
-def randomize_check(within: int = 24*60):
+@router.get(
+    "/randomize_checks/",
+    status_code=status.HTTP_200_OK,
+    description="distribute checks within future X minutes",
+)
+def randomize_check(within: int = 24 * 60):
     with create_session_auto() as sess:
         pages = sess.query(PageORM).all()
         for p in pages:

@@ -1,4 +1,3 @@
-import logging
 from typing import Optional
 
 from pydantic import BaseSettings
@@ -25,25 +24,4 @@ class Config(BaseSettings):
         env_file = ".env", ".env.prod"
 
 
-def get_logger(config: Config):
-    logger = logging.getLogger("pricetracker")
-    logger.setLevel(logging.INFO)
-    if config.debug:
-        logger.setLevel(logging.DEBUG)
-
-    fh = logging.FileHandler(config.log_output)
-    fmt = logging.Formatter(
-        "%(asctime)s %(levelname)s %(filename)s.%(funcName)s: %(message)s"
-    )
-    fh.setFormatter(fmt)
-
-    logger.addHandler(fh)
-
-    return logger
-
-
 config = Config()
-
-logger = get_logger(config)
-
-logger.info(config.__dict__)

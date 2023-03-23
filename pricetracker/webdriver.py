@@ -3,12 +3,13 @@ from functools import partial
 from pathlib import Path
 
 from fake_useragent import FakeUserAgentError, UserAgent
+from loguru import logger
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from .config import config, logger
+from .config import config
 
 try:
     ua = UserAgent()

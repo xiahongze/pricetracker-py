@@ -1,8 +1,9 @@
 import requests
+from loguru import logger
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from .config import config, logger
+from .config import config
 
 session = requests.Session()
 PUSHOVER_URL = "https://api.pushover.net/1/messages.json"

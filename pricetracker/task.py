@@ -3,9 +3,10 @@ from datetime import datetime, timedelta
 from itertools import islice
 from typing import List, Optional, Tuple, Union
 
+from loguru import logger
 from selenium.common.exceptions import TimeoutException, WebDriverException
 
-from .config import config, logger
+from .config import config
 from .models import Page, Price, User, WebsiteConfig
 from .models_orm import (
     PageORM,

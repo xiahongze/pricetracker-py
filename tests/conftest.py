@@ -5,6 +5,7 @@ from tempfile import mktemp
 import pytest
 from fastapi.testclient import TestClient
 from starlette import status
+from loguru import logger
 
 # sqlite:///:memory: (or, sqlite://)
 # sqlite:///relative/path/to/file.db
@@ -18,6 +19,14 @@ def testclient():
     from pricetracker.main import app
 
     return TestClient(app)
+
+
+@pytest.fixture
+def caplog(caplog):
+    # to support loguru with pytest
+    handler_id = logger.add(caplog.handler, format="{message}")
+    yield caplog
+    logger.remove(handler_id)
 
 
 @pytest.fixture

@@ -11,3 +11,5 @@ config.yaml
 repopulate.py
 .venv
 .ruff_cache
+.env
+.env.prod

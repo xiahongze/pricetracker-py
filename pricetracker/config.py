@@ -1,12 +1,10 @@
 import logging
-import os
 from typing import Optional
 
-import yaml
-from pydantic import BaseModel
+from pydantic import BaseSettings
 
 
-class Config(BaseModel):
+class Config(BaseSettings):
     db_path: str = "sqlite:///db.sqlite3"
     debug: bool = False
     log_output: str = "app.log"
@@ -23,16 +21,8 @@ class Config(BaseModel):
     user_agent: Optional[str]
     disable_tracking: bool = False  # disable tracking thread
 
-    def __init__(self, **data):
-        if "CONFIG" in os.environ:
-            with open(os.environ["CONFIG"]) as f:
-                data = yaml.safe_load(f)
-        for k in Config.schema()[
-            "properties"
-        ]:  # only the first layer not cover nested models
-            if k.upper() in os.environ:
-                data[k] = os.environ[k.upper()]
-        super().__init__(**data)
+    class Config:
+        env_file = ".env", ".env.prod"
 
 
 def get_logger(config: Config):

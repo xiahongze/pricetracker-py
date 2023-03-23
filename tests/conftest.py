@@ -5,6 +5,7 @@ from tempfile import mktemp
 import pytest
 from fastapi.testclient import TestClient
 from starlette import status
+from loguru import logger
 
 # sqlite:///:memory: (or, sqlite://)
 # sqlite:///relative/path/to/file.db
@@ -21,6 +22,14 @@ def testclient():
 
 
 @pytest.fixture
+def caplog(caplog):
+    # to support loguru with pytest
+    handler_id = logger.add(caplog.handler, format="{message}")
+    yield caplog
+    logger.remove(handler_id)
+
+
+@pytest.fixture
 def user(testclient):
     # don't import at the beginning of the file
     # because we need to set the env before the package is loaded
@@ -28,7 +37,7 @@ def user(testclient):
 
     # add user
     user = User(name="testuser1", po_user="pouser1", po_token="potoken1")
-    resp = testclient.put("/api/user/", data=user.json(exclude_unset=True))
+    resp = testclient.put("/api/user/", content=user.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     user = User(**resp.json())
     yield user
@@ -44,7 +53,9 @@ def config(testclient):
 
     # add config
     config = WebsiteConfig(name="config1", xpath="interestingxpath")
-    resp = testclient.put("/api/website-config/", data=config.json(exclude_unset=True))
+    resp = testclient.put(
+        "/api/website-config/", content=config.json(exclude_unset=True)
+    )
     assert resp.status_code == status.HTTP_201_CREATED
     config = WebsiteConfig(**resp.json())
     yield config
@@ -63,7 +74,7 @@ def page(user, config, testclient):
         user_id=user.id,
         config_id=config.id,
     )
-    resp = testclient.put("/api/page/", data=page.json(exclude_unset=True))
+    resp = testclient.put("/api/page/", content=page.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     page = Page(**resp.json())
     yield page

@@ -16,7 +16,7 @@ def short_timeout():
 @pytest.mark.skip("manually testing needed")
 def test_woolies():
     url = "https://www.woolworths.com.au/shop/productdetails/77770/gold-n-canola-oil"
-    xpath = '//div[@class="price price--large"] | //div[@class="price price--large ng-star-inserted"]'
+    xpath = '//div[@class="price price--large"] | //div[@class="price price--large ng-star-inserted"]'  # noqa: E501
     assert "$" in track(url, xpath)
 
 
@@ -29,8 +29,8 @@ def test_coles():
 
 @pytest.mark.skip("manually testing needed")
 def test_chemist():
-    url = "https://www.chemistwarehouse.com.au/buy/1062/beconase-hayfever-nasal-spray-200-doses"
-    xpath = '//span[@class="product__price"] | //div[@class="product__price"] | //div[@class="Price"]'
+    url = "https://www.chemistwarehouse.com.au/buy/1062/beconase-hayfever-nasal-spray-200-doses"  # noqa: E501
+    xpath = '//span[@class="product__price"] | //div[@class="product__price"] | //div[@class="Price"]'  # noqa: E501
     assert "$" in track(url, xpath)
 
 

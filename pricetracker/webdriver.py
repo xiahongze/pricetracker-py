@@ -3,20 +3,21 @@ from functools import partial
 from pathlib import Path
 
 from fake_useragent import FakeUserAgentError, UserAgent
+from loguru import logger
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from .config import config, logger
+from .config import config
 
 try:
     ua = UserAgent()
     ua_chrome = ua.chrome
     ua_firefox = ua.firefox
 except FakeUserAgentError:
-    ua_chrome = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.2 (KHTML, like Gecko) Chrome/22.0.1216.0 Safari/537.2"
-    ua_firefox = "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:16.0.1) Gecko/20121011 Firefox/16.0.1"
+    ua_chrome = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.2 (KHTML, like Gecko) Chrome/22.0.1216.0 Safari/537.2"  # noqa: E501
+    ua_firefox = "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:16.0.1) Gecko/20121011 Firefox/16.0.1"  # noqa: E501
 
 
 def make_chrome_options():

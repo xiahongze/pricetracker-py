@@ -3,9 +3,10 @@ from datetime import datetime, timedelta
 from itertools import islice
 from typing import List, Optional, Tuple, Union
 
+from loguru import logger
 from selenium.common.exceptions import TimeoutException, WebDriverException
 
-from .config import config, logger
+from .config import config
 from .models import Page, Price, User, WebsiteConfig
 from .models_orm import (
     PageORM,
@@ -22,6 +23,7 @@ def get_outdated_pages_with_configs_users() -> List[Tuple[Page, WebsiteConfig, U
     with create_session_auto() as sess:
         page_config_orms = (
             sess.query(PageORM, WebsiteConfigORM, UserORM)
+            .filter(PageORM.user_id == UserORM.id)
             .filter(PageORM.next_check < datetime.now())
             .filter(PageORM.active)
             .filter(WebsiteConfigORM.active)

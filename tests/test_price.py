@@ -11,15 +11,15 @@ def test_price_api(testclient: TestClient, fresh_db, page):
 
     # add one
     price = Price(price="$10.00")
-    resp = testclient.put("/api/price/", data=price.json(exclude_unset=True))
+    resp = testclient.put("/api/price/", content=price.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_400_BAD_REQUEST
 
     price = Price(price="$10.00", page_id=222)
-    resp = testclient.put("/api/price/", data=price.json(exclude_unset=True))
+    resp = testclient.put("/api/price/", content=price.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_400_BAD_REQUEST
 
     price = Price(price="$10.00", page_id=page.id)
-    resp = testclient.put("/api/price/", data=price.json(exclude_unset=True))
+    resp = testclient.put("/api/price/", content=price.json(exclude_unset=True))
     assert resp.status_code == status.HTTP_201_CREATED
     price = Price(**resp.json())
 

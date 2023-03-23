@@ -15,8 +15,8 @@ try:
     ua_chrome = ua.chrome
     ua_firefox = ua.firefox
 except FakeUserAgentError:
-    ua_chrome = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.2 (KHTML, like Gecko) Chrome/22.0.1216.0 Safari/537.2"
-    ua_firefox = "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:16.0.1) Gecko/20121011 Firefox/16.0.1"
+    ua_chrome = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.2 (KHTML, like Gecko) Chrome/22.0.1216.0 Safari/537.2"  # noqa: E501
+    ua_firefox = "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:16.0.1) Gecko/20121011 Firefox/16.0.1"  # noqa: E501
 
 
 def make_chrome_options():

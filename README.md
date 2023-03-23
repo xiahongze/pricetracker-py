@@ -1,6 +1,6 @@
-# PriceTracker #
+# PriceTracker
 
-This is a re-write of my *golang* project, [pricetracker](https://github.com/xiahongze/pricetracker) in pure Python. Here are some improvements:
+This is a re-write of my _golang_ project, [pricetracker](https://github.com/xiahongze/pricetracker) in pure Python. Here are some improvements:
 
 - fastapi with OpenAPI integration
 - SQL as backend supported by sqlalchemy
@@ -13,7 +13,7 @@ This is a re-write of my *golang* project, [pricetracker](https://github.com/xia
 
 ## overview
 
-The directory struction of this repo should be straightforward and only a few things 
+The directory struction of this repo should be straightforward and only a few things
 might need extra explanation:
 
 - `pricetracker/models_orm.py`: sql models
@@ -59,8 +59,8 @@ kill -9 `cat ./pid`
 ## notes
 
 Sometimes websites might block scraping using various means. One of the popular
-javascript library in this realm is called 
-[fingerprintjs](https://github.com/fingerprintjs/fingerprintjs2), 
+javascript library in this realm is called
+[fingerprintjs](https://github.com/fingerprintjs/fingerprintjs2),
 which detects a number of things
 
 - automation flag
@@ -82,3 +82,4 @@ If the default setting in this app did not work for you, try modify
 - 0.2.1 report page in send_message
 - 0.2.2 page -> page_orm in except
 - 0.2.3 prices are now reduced
+- 0.2.4 use poetry, black, isort, ruff, upgraded to py38

@@ -4,8 +4,8 @@ from tempfile import mktemp
 
 import pytest
 from fastapi.testclient import TestClient
-from starlette import status
 from loguru import logger
+from starlette import status
 
 # sqlite:///:memory: (or, sqlite://)
 # sqlite:///relative/path/to/file.db

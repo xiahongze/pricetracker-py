@@ -6,7 +6,6 @@ from pydantic import BaseSettings
 class Config(BaseSettings):
     db_path: str = "sqlite:///db.sqlite3"
     debug: bool = False
-    log_output: str = "app.log"
     pulling_freq: int = 600  # seconds
     fetch_limit: int = 60  # for historical prices
     po_app_token: str = ""  # pushover

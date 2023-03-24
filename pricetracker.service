@@ -1,0 +1,24 @@
+# Install location: /etc/systemd/system/pricetracker.service
+# systemctl enable pricetracker.service
+# systemctl start pricetracker.service
+
+[Unit]
+Description=Pricetracker
+DefaultDependencies=no
+After=network.target
+After=systemd-user-sessions.service
+After=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/git/pricetracker-py/
+ExecStart=/home/ubuntu/git/pricetracker-py/.venv/bin/uvicorn pricetracker.main:app --port 8001
+Restart=on-failure
+TimeoutStartSec=1min 0s
+TimeoutStopSec=30s
+Environment=PO_APP_TOKEN=
+
+[Install]
+WantedBy=multi-user.target

@@ -6,9 +6,9 @@ from pydantic import BaseModel
 
 class User(BaseModel):
     id: Optional[int]
-    name: Optional[str]
-    po_user: Optional[str]
-    po_device: Optional[str]
+    name: str
+    po_user: str
+    po_device: str = ""
 
     class Config:
         orm_mode = True
@@ -16,9 +16,9 @@ class User(BaseModel):
 
 class WebsiteConfig(BaseModel):
     id: Optional[int]
-    name: Optional[str]
-    xpath: Optional[str]
-    active: Optional[bool]
+    name: str
+    xpath: str
+    active: bool = True
 
     class Config:
         orm_mode = True
@@ -26,17 +26,17 @@ class WebsiteConfig(BaseModel):
 
 class Page(BaseModel):
     id: Optional[int]
-    name: Optional[str]
-    url: Optional[str]
+    name: str
+    url: str
     created_time: Optional[datetime]
     next_check: Optional[datetime]
-    freq: Optional[int]
-    retry: Optional[int]
-    active: Optional[bool]
+    freq: int = 24
+    retry: int = 0
+    active: bool = True
 
-    user_id: Optional[int]
+    user_id: int
 
-    config_id: Optional[int]
+    config_id: int
 
     class Config:
         orm_mode = True

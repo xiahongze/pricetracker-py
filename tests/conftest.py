@@ -1,11 +1,12 @@
 import atexit
+import json
 import os
 from tempfile import mktemp
 
 import pytest
 from fastapi.testclient import TestClient
-from starlette import status
 from loguru import logger
+from starlette import status
 
 # sqlite:///:memory: (or, sqlite://)
 # sqlite:///relative/path/to/file.db
@@ -36,8 +37,8 @@ def user(testclient):
     from pricetracker.api.user import User
 
     # add user
-    user = User(name="testuser1", po_user="pouser1", po_token="potoken1")
-    resp = testclient.put("/api/user/", content=user.json(exclude_unset=True))
+    user = dict(name="testuser1", po_user="pouser1", po_token="potoken1")
+    resp = testclient.put("/api/user/", content=json.dumps(user))
     assert resp.status_code == status.HTTP_201_CREATED
     user = User(**resp.json())
     yield user
@@ -52,10 +53,8 @@ def config(testclient):
     from pricetracker.models import WebsiteConfig
 
     # add config
-    config = WebsiteConfig(name="config1", xpath="interestingxpath")
-    resp = testclient.put(
-        "/api/website-config/", content=config.json(exclude_unset=True)
-    )
+    config = dict(name="config1", xpath="interestingxpath")
+    resp = testclient.put("/api/website-config/", content=json.dumps(config))
     assert resp.status_code == status.HTTP_201_CREATED
     config = WebsiteConfig(**resp.json())
     yield config
@@ -67,14 +66,13 @@ def config(testclient):
 def page(user, config, testclient):
     from pricetracker.models import Page
 
-    # breakpoint()
-    page = Page(
+    page = dict(
         name="coffee",
         url="http://example.com/xxx",
         user_id=user.id,
         config_id=config.id,
     )
-    resp = testclient.put("/api/page/", content=page.json(exclude_unset=True))
+    resp = testclient.put("/api/page/", content=json.dumps(page))
     assert resp.status_code == status.HTTP_201_CREATED
     page = Page(**resp.json())
     yield page

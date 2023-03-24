@@ -25,36 +25,23 @@ might need extra explanation:
 
 You need to have Chrome with chromedriver or FireFox with geckodriver.
 
-`python3 setup.py install`
-
-or
-
-`pip3 install -r requirements.txt`
+```
+poetry install
+```
 
 ## test
 
-`pip3 install -r requirements_test.txt`
-
-`pytest`
+```
+pytest -v
+```
 
 ## debug
 
 `uvicorn pricetracker.main:app --reload`
 
-## sample serving scripts
+## serving
 
-`start.sh`
-
-```bash
-CONFIG=config.yaml uvicorn pricetracker.main:app --host 0.0.0.0 > stdout 2>&1 &
-echo $! > pid
-```
-
-`stop.sh`
-
-```bash
-kill -9 `cat ./pid`
-```
+If you are using Linux, `systemd` is recommended as a process manager. You can use `pricetracker.service` as a starting point for your script.
 
 ## notes
 

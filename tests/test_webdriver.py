@@ -8,7 +8,7 @@ from pricetracker.webdriver import track
 @pytest.fixture
 def short_timeout():
     old = config.timeout
-    config.timeout = 5
+    config.timeout = 2
     yield
     config.timeout = old
 

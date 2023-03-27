@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, TypeVar
 
 from pydantic import BaseModel
 
@@ -51,3 +51,6 @@ class Price(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+ModelTypeBoundPy = TypeVar("ModelTypeBoundPy", User, WebsiteConfig, Page, Price)

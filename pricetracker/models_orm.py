@@ -2,7 +2,7 @@
 """
 from contextlib import contextmanager
 from datetime import datetime
-from typing import Any, Generator
+from typing import Any, Generator, TypeVar
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.engine import create_engine
@@ -96,3 +96,7 @@ def create_session() -> Generator[SessionType, Any, None]:
 
 
 create_session_auto = contextmanager(create_session)
+
+ModelTypeBoundOrm = TypeVar(
+    "ModelTypeBoundOrm", UserORM, WebsiteConfigORM, PageORM, PriceORM
+)

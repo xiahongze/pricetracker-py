@@ -6,7 +6,9 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.session import Session
 from starlette import status
 
-from ..models_orm import create_session
+from pricetracker.models import ModelTypeBoundPy
+
+from ..models_orm import ModelTypeBoundOrm, create_session
 
 
 def get_one_from(query):
@@ -16,17 +18,26 @@ def get_one_from(query):
         raise HTTPException(400, "id not found in the db")
 
 
-def mount(name: str, router: APIRouter, klass_py, klass_orm, ignored=set()):
+def mount(
+    name: str,
+    router: APIRouter,
+    klass_py: ModelTypeBoundPy,
+    klass_orm: ModelTypeBoundOrm,
+    ignored=None,
+):
     """
-    mount mounts common CRUD patterns onto the router
+    mount mounts common CRUD patterns onto the router,
 
     :param klass_py: Pydantic Model
     :param klass_orm: sqlalchemy Model
     :param ignored: set of names to ignore, only from
         create, read, update, delete, list
+        default: {}
     """
+    if not ignored:
+        ignored = set()
 
-    def create(model_py: klass_py, sess: Session = Depends(create_session)):
+    def create(model_py: ModelTypeBoundPy, sess: Session = Depends(create_session)):
         model_orm = klass_orm(**model_py.dict(exclude_none=True, exclude_unset=True))
         sess.add(model_orm)
         sess.flush([model_orm])
@@ -36,7 +47,7 @@ def mount(name: str, router: APIRouter, klass_py, klass_orm, ignored=set()):
         query = sess.query(klass_orm).filter(klass_orm.id == idx)
         return get_one_from(query)
 
-    def update(model_py: klass_py, sess: Session = Depends(create_session)):
+    def update(model_py: ModelTypeBoundPy, sess: Session = Depends(create_session)):
         if model_py.id is None:
             raise HTTPException(400, f"{name} id is not given")
         query = sess.query(klass_orm).filter(klass_orm.id == model_py.id)

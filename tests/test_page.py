@@ -1,7 +1,7 @@
+import json
+
 from fastapi import status
 from fastapi.testclient import TestClient
-
-import json
 
 
 def test_page_api(testclient: TestClient, fresh_db, user, config):

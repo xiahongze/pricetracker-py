@@ -7,7 +7,6 @@ from sqlalchemy.orm.session import Session
 from starlette import status
 
 from pricetracker.models import ModelTypeBoundPy
-
 from pricetracker.models_orm import ModelTypeBoundOrm, create_session
 
 

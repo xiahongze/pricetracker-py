@@ -10,7 +10,7 @@ from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.orm.session import Session as SessionType
 from sqlalchemy.orm.session import sessionmaker
 
-from .config import config
+from pricetracker.config import config
 
 Base = declarative_base()
 

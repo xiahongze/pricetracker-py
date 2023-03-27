@@ -4,7 +4,7 @@ from random import randint
 from fastapi import APIRouter
 from starlette import status
 
-from ..models_orm import PageORM, create_session_auto
+from pricetracker.models_orm import PageORM, create_session_auto
 
 
 def random_future(within: int) -> datetime:

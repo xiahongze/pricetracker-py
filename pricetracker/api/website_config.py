@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from ..models import WebsiteConfig
-from ..models_orm import WebsiteConfigORM
-from .basic_crud import mount
+from pricetracker.models import WebsiteConfig
+from pricetracker.models_orm import WebsiteConfigORM
+from pricetracker.api.basic_crud import mount
 
 router = APIRouter()
 

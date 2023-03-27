@@ -5,9 +5,9 @@ from fastapi.params import Depends
 from sqlalchemy.orm.session import Session
 from starlette import status
 
-from ..models import Page
-from ..models_orm import PageORM, UserORM, WebsiteConfigORM, create_session
-from .basic_crud import mount
+from pricetracker.models import Page
+from pricetracker.models_orm import PageORM, UserORM, WebsiteConfigORM, create_session
+from pricetracker.api.basic_crud import mount
 
 router = APIRouter()
 

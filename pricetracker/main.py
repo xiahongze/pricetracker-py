@@ -4,14 +4,14 @@ from fastapi import FastAPI
 from loguru import logger
 from starlette.responses import RedirectResponse
 
-from .api.page import router as page_router
-from .api.price import router as price_router
-from .api.user import router as user_router
-from .api.utils import router as utils_router
-from .api.website_config import router as config_router
-from .config import config
-from .task import check_db_in_loop
-from .version import VERSION
+from pricetracker.api.page import router as page_router
+from pricetracker.api.price import router as price_router
+from pricetracker.api.user import router as user_router
+from pricetracker.api.utils import router as utils_router
+from pricetracker.api.website_config import router as config_router
+from pricetracker.config import config
+from pricetracker.task import check_db_in_loop
+from pricetracker.version import VERSION
 
 app = FastAPI(
     debug=config.debug,

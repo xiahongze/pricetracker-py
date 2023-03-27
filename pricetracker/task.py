@@ -6,17 +6,17 @@ from typing import List, Optional, Tuple, Union
 from loguru import logger
 from selenium.common.exceptions import TimeoutException, WebDriverException
 
-from .config import config
-from .models import Page, Price, User, WebsiteConfig
-from .models_orm import (
+from pricetracker.config import config
+from pricetracker.models import Page, Price, User, WebsiteConfig
+from pricetracker.models_orm import (
     PageORM,
     PriceORM,
     UserORM,
     WebsiteConfigORM,
     create_session_auto,
 )
-from .pushover import send_message
-from .webdriver import track
+from pricetracker.pushover import send_message
+from pricetracker.webdriver import track
 
 
 def get_outdated_pages_with_configs_users() -> List[Tuple[Page, WebsiteConfig, User]]:

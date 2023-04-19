@@ -23,7 +23,8 @@ except FakeUserAgentError:
 def make_chrome_options():
     options = webdriver.ChromeOptions()
     excluded_flags = ["enable-automation", "ignore-certificate-errors"]
-    options.headless = config.headless
+    if config.headless:
+        options.add_argument("--headless=new")
     options.add_argument("--disable-gpu")
     if config.user_agent:
         options.add_argument(f"--user-agent={config.user_agent}")

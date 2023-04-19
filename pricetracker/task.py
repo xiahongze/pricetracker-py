@@ -103,7 +103,7 @@ def check_price(page: Page, conf: WebsiteConfig, user: User) -> Optional[str]:
             if page_orm.retry >= config.max_retry:
                 page_orm.active = False
                 msg = f"{msg} Deactivated."
-            logger.error(msg)
+            logger.exception(msg)
             send_message(msg, user.po_user, user.po_device)
             return
         finally:

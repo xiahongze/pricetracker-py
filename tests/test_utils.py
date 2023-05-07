@@ -1,8 +1,7 @@
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from pricetracker.models import Page
-from pricetracker.models_orm import PageORM, create_session_auto
+from pricetracker.models import Page, PageORM, create_session_auto
 
 
 def test_randomize_check(testclient: TestClient, fresh_db, page: Page):

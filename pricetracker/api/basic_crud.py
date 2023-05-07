@@ -6,8 +6,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.session import Session
 from starlette import status
 
-from pricetracker.models import ModelTypeBoundPy
-from pricetracker.models_orm import ModelTypeBoundOrm, create_session
+from pricetracker.models import ModelTypeBoundOrm, ModelTypeBoundPy, create_session
 
 
 def get_one_from(query):

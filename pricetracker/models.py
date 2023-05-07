@@ -116,10 +116,17 @@ def convert_sqlalchemy_model(model: ModelTypeBoundOrm, model_name: str):
             # nullable, default, primary key
             # primary key is nullable because when we post to create an entity,
             # we don't have the id yet so we can't set it
-            fields[column.name] = (
-                column.type.python_type,
-                Field(default=column.default),
-            )
+            if column.default and callable(column.default.arg):
+                # default is a callable, e.g. datetime.now
+                fields[column.name] = (
+                    column.type.python_type,
+                    Field(default_factory=column.default.arg),
+                )
+            else:
+                fields[column.name] = (
+                    column.type.python_type,
+                    Field(default=column.default.arg if column.default else None),
+                )
         else:
             fields[column.name] = (column.type.python_type, ...)
     return create_model(model_name, **fields, __config__=PydanticConfigObject)

@@ -71,3 +71,4 @@ If the default setting in this app did not work for you, try modify
 - 0.2.3 prices are now reduced
 - 0.2.4 use poetry, black, isort, ruff, upgraded to py38
 - 0.2.5 config, loguru, uvicorn and removing warnings
+- 0.3.0 use create_model to generate dynamic pydantic models

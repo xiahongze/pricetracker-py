@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from pricetracker.models import Price
-from pricetracker.models_orm import PageORM, create_session_auto
+from pricetracker.models import PageORM, Price, create_session_auto
 from pricetracker.task import (
     _check_once,
     add_price,

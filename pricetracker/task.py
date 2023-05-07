@@ -7,11 +7,14 @@ from loguru import logger
 from selenium.common.exceptions import TimeoutException, WebDriverException
 
 from pricetracker.config import config
-from pricetracker.models import Page, Price, User, WebsiteConfig
-from pricetracker.models_orm import (
+from pricetracker.models import (
+    Page,
     PageORM,
+    Price,
     PriceORM,
+    User,
     UserORM,
+    WebsiteConfig,
     WebsiteConfigORM,
     create_session_auto,
 )

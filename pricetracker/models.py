@@ -118,9 +118,11 @@ def convert_sqlalchemy_model(model: ModelTypeBoundOrm, model_name: str):
             # we don't have the id yet so we can't set it
             if column.default and callable(column.default.arg):
                 # default is a callable, e.g. datetime.now
+                # note that it is wrapped in a function that expects a ctx var
+                # plus args so we need to unwrap it
                 fields[column.name] = (
                     column.type.python_type,
-                    Field(default_factory=column.default.arg),
+                    Field(default_factory=column.default.arg.__wrapped__),
                 )
             else:
                 fields[column.name] = (

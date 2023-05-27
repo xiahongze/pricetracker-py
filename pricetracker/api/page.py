@@ -21,7 +21,7 @@ def get_pages(user_id: int, sess: Session = Depends(create_session)):
     ]
 
 
-@router.put("/", response_model=Page, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=Page, status_code=status.HTTP_201_CREATED)
 def create_page(page: Page, sess: Session = Depends(create_session)):
     if page.user_id is None or page.config_id is None:
         raise HTTPException(400, "user or config id is not given")

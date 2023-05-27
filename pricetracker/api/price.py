@@ -12,7 +12,7 @@ from pricetracker.models import PageORM, Price, PriceORM, create_session
 router = APIRouter()
 
 
-@router.put("/", response_model=Price, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=Price, status_code=status.HTTP_201_CREATED)
 def create_price(price: Price, sess: Session = Depends(create_session)):
     if price.page_id is None:
         raise HTTPException(400, "page id is not given")

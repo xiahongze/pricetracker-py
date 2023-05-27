@@ -29,7 +29,7 @@ def test_coles():
 
 @pytest.mark.skip("manually testing needed")
 def test_chemist():
-    url = "https://www.chemistwarehouse.com.au/buy/1062/beconase-hayfever-nasal-spray-200-doses"  # noqa: E501
+    url = "https://www.chemistwarehouse.com.au/buy/99354/rhinocort-extra-strength-hayfever-antihistamine-allergy-nasal-spray-120-sprays-x-2-pack"  # noqa: E501
     xpath = '//span[@class="product__price"] | //div[@class="product__price"] | //div[@class="Price"]'  # noqa: E501
     assert "$" in track(url, xpath)
 

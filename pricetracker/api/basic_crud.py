@@ -68,13 +68,13 @@ def mount(
         return [klass_py.from_orm(u) for u in sess.query(klass_orm).all()]
 
     if "create" not in ignored:
-        router.put("/", response_model=klass_py, status_code=status.HTTP_201_CREATED)(
+        router.post("/", response_model=klass_py, status_code=status.HTTP_201_CREATED)(
             create
         )
     if "read" not in ignored:
         router.get("/", response_model=klass_py)(get)
     if "update" not in ignored:
-        router.post("/")(update)
+        router.put("/")(update)
     if "delete" not in ignored:
         router.delete(
             "/", response_model=klass_py, status_code=status.HTTP_202_ACCEPTED

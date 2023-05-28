@@ -135,7 +135,7 @@ def check_(page: Page, conf: WebsiteConfig, user: User):
 def _check_once():
     pages_configs_users = get_outdated_pages_with_configs_users()
     if not pages_configs_users:
-        logger.info("no outdated pages found")
+        logger.debug("no outdated pages found")
         return
     for page, conf, user in pages_configs_users:
         check_(page, conf, user)

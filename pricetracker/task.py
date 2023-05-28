@@ -143,10 +143,10 @@ def _check_once():
 
 def check_db_in_loop():
     while True:
-        logger.info("checking db...")
+        logger.debug("checking db...")
         try:
             _check_once()
         except:  # noqa: E722
             logger.exception("encountered exception in while True")
-        logger.info("done check once")
+        logger.debug("done check once")
         time.sleep(config.pulling_freq)

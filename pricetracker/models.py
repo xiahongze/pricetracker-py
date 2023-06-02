@@ -74,9 +74,7 @@ class PriceORM(Base):
     page = relationship("PageORM", back_populates="prices")
 
 
-engine = create_engine(
-    config.db_path, echo=config.debug, connect_args={"check_same_thread": False}
-)
+engine = create_engine(config.db_path, echo=config.debug)
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 
